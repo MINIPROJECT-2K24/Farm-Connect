@@ -2,7 +2,8 @@ dotenv.config();
 import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
-import connectDB from "./config/Db.js";
+import mongoose from "mongoose";
+import authRoutes from "./routes/authRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT;
@@ -14,10 +15,8 @@ app.use(express.json());
 // MongoDB Connection
 connectDB();
 
-// Sample route
-app.get("/fetch", (req, res) => {
-  res.send("Hello, FarmConnect API!");
-});
+//routes middleware
+app.use("/api/users", authRoutes);
 
 // Start server
 app.listen(PORT, () => {
