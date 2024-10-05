@@ -8,8 +8,11 @@ const userSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      required: true,
+      required: function () {
+        return this.userType === "buyer";
+      },
       unique: true,
+      sparse: true,
     },
     phoneNumber: {
       type: String,
@@ -28,8 +31,8 @@ const userSchema = new mongoose.Schema(
     address: {
       city: { type: String, required: true },
       state: { type: String, required: true },
-      district: { type: String, required: false },
-      postalCode: { type: String, required: false },
+      district: { type: String, required: true },
+      postalCode: { type: String, required: true },
     },
     location: {
       type: {
