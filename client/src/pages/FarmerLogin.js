@@ -1,14 +1,15 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const FarmerLogin = () => {
   const [formData, setFormData] = useState({
     identifier: "",
     password: "",
   });
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -31,8 +32,23 @@ const FarmerLogin = () => {
         "http://localhost:5000/api/users/login",
         loginData
       );
-      alert("Login successful!");
-      console.log(response.data);
+
+      // Assuming the token is returned in response.data.token
+      const { token, farmerName, location, phoneNumber, latitude, longitude } = response.data;
+
+      // Store JWT token in localStorage
+      localStorage.setItem("token", token);
+      localStorage.setItem('farmerData', JSON.stringify({
+        farmerName,
+        phoneNumber,
+        location: {
+          latitude,
+          longitude,
+        },
+      }));
+
+      // Redirect to Add Crop page
+      navigate('/add-crop');
     } catch (error) {
       setError("Login failed! Please check your credentials.");
       console.error("Login error:", error.response?.data || error.message);

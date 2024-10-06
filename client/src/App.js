@@ -4,6 +4,7 @@ import FarmerRegister from "./pages/FarmerRegister";
 import BuyerRegister from "./pages/BuyerRegister";
 import FarmerLogin from "./pages/FarmerLogin";
 import BuyerLogin from "./pages/BuyerLogin";
+import CropDetails from "./pages/CropDetails";  // Updated import
 
 const App = () => {
   return (
@@ -14,6 +15,7 @@ const App = () => {
         <Route path="/register-buyer" element={<BuyerRegister />} />
         <Route path="/login-farmer" element={<FarmerLogin />} />
         <Route path="/login-buyer" element={<BuyerLogin />} />
+        <Route path="/add-crop" element={<CropDetails />} /> {/* Updated route */}
       </Routes>
     </Router>
   );
