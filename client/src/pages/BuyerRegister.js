@@ -16,7 +16,6 @@ const BuyerRegister = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    // console.log(`Field changed: ${name} = ${value}`); // Log the changed field
   };
 
   const handleSubmit = async (e) => {
@@ -45,77 +44,110 @@ const BuyerRegister = () => {
         registrationData
       );
       alert("Buyer registration successful!");
-      console.log("Response:", response.data); // Log the response data
+      console.log("Response:", response.data);
     } catch (error) {
-      // Log the error response if it exists
       if (error.response) {
-        console.error("Error Response:", error.response.data); // Log the error response data
+        console.error("Error Response:", error.response.data);
         alert(`Registration failed: ${error.response.data.message}`);
       } else {
-        console.error("Error:", error.message); // Log the error message if no response is available
+        console.error("Error:", error.message);
         alert("Registration failed! Please try again later.");
       }
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        name="fullName"
-        placeholder="Full Name"
-        onChange={handleChange}
-        required
-      />
-      <input
-        type="email"
-        name="email"
-        placeholder="Email"
-        onChange={handleChange}
-        required
-      />
-      <input
-        type="text"
-        name="phoneNumber"
-        placeholder="Phone Number"
-        onChange={handleChange}
-        required
-      />
-      <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        onChange={handleChange}
-        required
-      />
-      <input
-        type="text"
-        name="city"
-        placeholder="City"
-        onChange={handleChange}
-        required
-      />
-      <input
-        type="text"
-        name="state"
-        placeholder="State"
-        onChange={handleChange}
-        required
-      />
-      <input
-        type="text"
-        name="district"
-        placeholder="District"
-        onChange={handleChange}
-      />
-      <input
-        type="text"
-        name="postalCode"
-        placeholder="Postal Code"
-        onChange={handleChange}
-      />
-      <button type="submit">Register</button>
-    </form>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
+        <h2 className="text-2xl font-bold text-center text-gray-700 mb-6">Buyer Registration</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <input
+              type="text"
+              name="fullName"
+              placeholder="Full Name"
+              onChange={handleChange}
+              required
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div className="mb-4">
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              onChange={handleChange}
+              required
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div className="mb-4">
+            <input
+              type="text"
+              name="phoneNumber"
+              placeholder="Phone Number"
+              onChange={handleChange}
+              required
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div className="mb-4">
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              onChange={handleChange}
+              required
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div className="mb-4">
+            <input
+              type="text"
+              name="city"
+              placeholder="City"
+              onChange={handleChange}
+              required
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div className="mb-4">
+            <input
+              type="text"
+              name="state"
+              placeholder="State"
+              onChange={handleChange}
+              required
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div className="mb-4">
+            <input
+              type="text"
+              name="district"
+              placeholder="District"
+              onChange={handleChange}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div className="mb-6">
+            <input
+              type="text"
+              name="postalCode"
+              placeholder="Postal Code"
+              onChange={handleChange}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white font-semibold py-3 rounded-lg hover:bg-blue-600 transition duration-200"
+          >
+            Register
+          </button>
+        </form>
+      </div>
+    </div>
   );
 };
 

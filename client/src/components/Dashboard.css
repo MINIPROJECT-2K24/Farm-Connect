@@ -1,0 +1,74 @@
+/* Dashboard.css */
+
+.dashboard-container {
+    display: flex;
+    height: 100vh; /* Full height of the viewport */
+}
+
+.dashboard-navbar {
+    width: 150px; /* Fixed width for the sidebar */
+    background-color: #2d3748; /* Dark gray background */
+    height: 100%; /* Full height */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+    padding: 1rem; /* Padding inside navbar */
+    color: white; /* White text */
+}
+
+.dashboard-navbar h1 {
+    font-size: 1.5rem; /* Title size */
+    font-weight: bold; /* Bold title */
+}
+
+.dashboard-navbar ul {
+    margin-top: 1.5rem; /* Space above the list */
+    padding: 0; /* No padding */
+    list-style: none; /* Remove default list styling */
+}
+
+.dashboard-navbar li {
+    margin-bottom: 1rem; /* Space between menu items */
+}
+
+.dashboard-navbar button {
+    background: none; /* No background */
+    border: none; /* No border */
+    color: #cbd5e0; /* Light gray text */
+    padding: 0.5rem 1rem; /* Padding for buttons */
+    text-align: left; /* Align text to the left */
+    width: 100%; /* Full width */
+    cursor: pointer; /* Pointer cursor */
+    transition: background-color 0.3s; /* Smooth transition */
+}
+
+.dashboard-navbar button:hover {
+    background-color: #4a5568; /* Darker gray on hover */
+    color: white; /* White text on hover */
+}
+
+.dashboard-content {
+    flex: 1; /* Take remaining space */
+    padding: 2rem; /* Padding for content */
+    background-color: #edf2f7; /* Light gray background for content */
+    margin-left: 1rem; /* Space between navbar and content */
+    border-radius: 0.25rem; /* Optional: Rounded corners for content */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: Subtle shadow for content */
+}
+
+.dashboard-content h2 {
+    font-size: 2rem; /* Heading size */
+    color: #4a5568; /* Darker text color */
+}
+
+.dashboard-close-button {
+    margin-top: 1rem; /* Space above the button */
+    background-color: #f56565; /* Red background */
+    color: white; /* White text */
+    padding: 0.5rem 1rem; /* Padding for button */
+    border: none; /* No border */
+    border-radius: 0.25rem; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor */
+}
+
+.dashboard-close-button:hover {
+    background-color: #c53030; /* Darker red on hover */
+}

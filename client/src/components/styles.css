@@ -1,0 +1,29 @@
+/* styles.css or any relevant CSS file */
+
+body {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .animated-background {
+    background-image: url('https://images.unsplash.com/photo-1579081861713-8d759b5d19d7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDV8fGZhcm18ZW58MHx8fHwxNjgwNzE4NzEz&ixlib=rb-4.0.3&q=80&w=1080'); /* Replace with your image */
+    background-size: cover;
+    background-position: center;
+    animation: zoom 20s infinite alternate;
+    position: fixed; /* Fixed positioning to cover the whole viewport */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Send it behind other elements */
+  }
+  
+  @keyframes zoom {
+    0% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(1.05);
+    }
+  }
+  

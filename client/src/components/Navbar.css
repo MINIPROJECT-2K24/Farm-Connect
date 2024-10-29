@@ -1,0 +1,46 @@
+.navbar {
+  background-color: rgb(115, 186, 222); /* Semi-transparent blue background */
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center; /* Align items in the center */
+  gap: 15px; /* Add spacing between the buttons */
+  margin-left: auto; /* Push the buttons to the right */
+}
+
+.navbar-button {
+  color: white;
+  text-decoration: none;
+  padding: 5px 10px;
+  background-color: #000000; /* Brownish background for buttons */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.navbar-button:hover,
+.dashboard-button:hover {
+  background-color: #635b5a; /* Darker shade on hover */
+}
+
+.dashboard-button {
+  color: white;
+  text-decoration: none;
+  padding: 5px 10px;
+  background-color: #000000; /* Same background color as logout */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}

@@ -32,11 +32,9 @@ const FarmerLogin = () => {
         "http://localhost:5000/api/users/login",
         loginData
       );
-
-      // Assuming the token is returned in response.data.token
+      console.log(response);
       const { token, farmerName, location, phoneNumber, latitude, longitude } = response.data;
 
-      // Store JWT token in localStorage
       localStorage.setItem("token", token);
       localStorage.setItem('farmerData', JSON.stringify({
         farmerName,
@@ -46,9 +44,9 @@ const FarmerLogin = () => {
           longitude,
         },
       }));
+      localStorage.setItem("role", response.data.user.userType);
 
-      // Redirect to Add Crop page
-      navigate('/add-crop');
+      navigate('/crop-search'); // Navigate to the crop search page
     } catch (error) {
       setError("Login failed! Please check your credentials.");
       console.error("Login error:", error.response?.data || error.message);
@@ -58,35 +56,45 @@ const FarmerLogin = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="farmer-login-form">
-      <div className="form-group">
-        <input
-          type="text"
-          name="identifier"
-          placeholder="Phone Number"
-          value={formData.identifier}
-          onChange={handleChange}
-          required
-        />
-      </div>
+    <div className="flex items-center justify-center min-h-screen bg-white">
+      <form onSubmit={handleSubmit} className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
+        <h2 className="text-2xl font-bold text-center text-gray-700 mb-6">Farmer Login</h2>
+        
+        <div className="mb-4">
+          <input
+            type="text"
+            name="identifier"
+            placeholder="Phone Number"
+            value={formData.identifier}
+            onChange={handleChange}
+            required
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
-      <div className="form-group">
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          required
-        />
-      </div>
+        <div className="mb-4">
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
-      <button type="submit" disabled={loading}>
-        {loading ? "Logging in..." : "Login"}
-      </button>
+        <button
+          type="submit"
+          disabled={loading}
+          className={`w-full bg-blue-500 text-white font-semibold py-3 rounded-lg hover:bg-blue-600 transition duration-200 ${loading && 'opacity-50 cursor-not-allowed'}`}
+        >
+          {loading ? "Logging in..." : "Login"}
+        </button>
 
-      {error && <p className="error-message">{error}</p>}
-    </form>
+        {error && <p className="text-red-500 text-center mt-4">{error}</p>}
+      </form>
+    </div>
   );
 };
 
