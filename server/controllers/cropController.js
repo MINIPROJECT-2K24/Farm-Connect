@@ -107,4 +107,83 @@ const getAllcrops = async (req, res) => {
   }
 };
 
+export const updateCrop = async (req, res) => {
+  try {
+    console.log("Request Body:", req.body);
+    console.log("Uploaded File:", req.file);
+
+    const token = req.headers["authorization"];
+    if (!token || !token.startsWith("Bearer ")) {
+      return res
+        .status(401)
+        .json({ message: "Unauthorized. No token provided." });
+    }
+
+    const tokenValue = token.split(" ")[1];
+    const tokenData = jwt.verify(tokenValue, process.env.JWT_SECRET);
+
+    const cropId = req.params.id;
+
+    const { cropName, price, quantity } = req.body;
+    if (!cropName || isNaN(price) || isNaN(quantity)) {
+      return res.status(400).json({
+        message:
+          "Invalid crop data. Ensure cropName, price, and quantity are provided and valid.",
+      });
+    }
+
+    let photoURL = null;
+
+    if (req.file) {
+      try {
+        photoURL = await uploadFile(req.file);
+      } catch (error) {
+        console.error("File upload error:", error);
+        return res
+          .status(500)
+          .json({ message: "Error uploading file to Firebase." });
+      }
+    }
+
+    const updatedCrop = await Crop.findByIdAndUpdate(
+      cropId,
+      {
+        cropName,
+        price: Number(price),
+        quantity: Number(quantity),
+        farmerName: tokenData.farmerName,
+        phoneno: tokenData.phoneNumber,
+        location: {
+          City: tokenData.location?.city || "Unknown City",
+          State: tokenData.location?.state || "Unknown State",
+          District: tokenData.location?.district || "Unknown District",
+          PostalCode: tokenData.location?.postalCode || "000000",
+        },
+        geopoint: {
+          type: "Point",
+          coordinates: tokenData.Coordinates || [0, 0],
+        },
+        ...(photoURL && { photo: photoURL }),
+      },
+      { new: true }
+    );
+
+    if (!updatedCrop) {
+      return res.status(404).json({ message: "Crop not found" });
+    }
+
+    console.log("Updated Crop:", updatedCrop);
+
+    res.status(200).json({
+      message: "Crop updated successfully",
+      crop: updatedCrop,
+    });
+  } catch (error) {
+    console.error("Error updating crop:", error);
+    res.status(500).json({
+      message: "An unexpected error occurred while updating the crop.",
+    });
+  }
+};
+
 export { getAllcrops };
