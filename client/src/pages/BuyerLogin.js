@@ -28,15 +28,25 @@ const BuyerLogin = () => {
         }
       );
       console.log(response);
-
-      const { token, buyerName, location, email: buyerEmail } = response.data;
-
+       const latitude = response.data.user.location.coordinates[0];
+       const longitude = response.data.user.location.coordinates[1];
+      const location=response.data.user.address
+      const { token, buyerName, email: buyerEmail } = response.data;
+      console.log(location);
       localStorage.setItem("token", token);
-      localStorage.setItem('buyerData', JSON.stringify({
-        buyerName,
-        email: buyerEmail,
-        location,
-      }));
+
+      // [77.1006208, 13.3400771]  farmer data
+     
+       localStorage.setItem("latitude", latitude);
+      localStorage.setItem("longitude", longitude);
+    //  localStorage.setItem(location);
+
+
+      // localStorage.setItem('buyerData', JSON.stringify({
+      //   buyerName,
+      //   email: buyerEmail,
+      //   location,
+      // }));
       localStorage.setItem("role", response.data.user.userType);
       alert("Login successful!");
 

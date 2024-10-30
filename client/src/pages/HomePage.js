@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MapComp from '../components/LeafletMap';
+import axios from 'axios';
 
 const CropSearch = () => {
   const [district, setDistrict] = useState('');
   const [cropName, setCropName] = useState('');
   const [farmers, setFarmers] = useState([]);
-  
+
   const navigate = useNavigate();
 
   const districts = [
@@ -17,77 +18,33 @@ const CropSearch = () => {
     'Tumkur', 'Udupi', 'Uttara Kannada', 'Yadgir'
   ];
 
-  const mockFarmersData = [
-    {
-      district: 'Bangalore',
-      cropImage: "https://via.placeholder.com/150/FF5733/FFFFFF?text=Wheat",
-      cropName: "Wheat",
-      farmerName: "Farmer A",
-      quantity: 150,
-      price: 25,
-      phoneNumber: '123-456-7890',
-      location: 'Bangalore'
-    },
-    {
-      district: 'Bangalore',
-      cropImage: "https://via.placeholder.com/150/33FF57/FFFFFF?text=Rice",
-      cropName: "Rice",
-      farmerName: "Farmer B",
-      quantity: 200,
-      price: 30,
-      phoneNumber: '987-654-3210',
-      location: 'Bangalore'
-    },
-    {
-      district: 'Mysore',
-      cropImage: "https://via.placeholder.com/150/3357FF/FFFFFF?text=Maize",
-      cropName: "Maize",
-      farmerName: "Farmer C",
-      quantity: 180,
-      price: 20,
-      phoneNumber: '456-789-1230',
-      location: 'Mysore'
-    },
-    {
-      district: 'Bangalore Rural',
-      cropImage: "https://via.placeholder.com/150/FF5733/FFFFFF?text=Wheat",
-      cropName: "Wheat",
-      farmerName: "Farmer D",
-      quantity: 130,
-      price: 22,
-      phoneNumber: '321-654-9870',
-      location: 'Bangalore Rural'
-    },
-    {
-      district: 'Gulbarga',
-      cropImage: "https://via.placeholder.com/150/3357FF/FFFFFF?text=Rice",
-      cropName: "Rice",
-      farmerName: "Farmer E",
-      quantity: 160,
-      price: 35,
-      phoneNumber: '654-321-0987',
-      location: 'Gulbarga'
-    },
-  ];
-
   useEffect(() => {
-    setFarmers(mockFarmersData);
+    fetchFarmersData();
   }, []);
 
+  const fetchFarmersData = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/crops/getcrops');
+      setFarmers(response.data.crops); // Assuming response structure is { crops: [...] }
+    } catch (error) {
+      console.error("Error fetching farmers data:", error);
+    }
+  };
+
   const handleSearch = () => {
-    let filteredFarmers = mockFarmersData;
+    let filteredFarmers = farmers;
 
     if (district && cropName) {
-      filteredFarmers = mockFarmersData.filter((farmer) =>
-        farmer.district.toLowerCase() === district.toLowerCase() &&
+      filteredFarmers = farmers.filter((farmer) =>
+        farmer.location.District.toLowerCase() === district.toLowerCase() &&
         farmer.cropName.toLowerCase() === cropName.toLowerCase()
       );
     } else if (district) {
-      filteredFarmers = mockFarmersData.filter(
-        (farmer) => farmer.district.toLowerCase() === district.toLowerCase()
+      filteredFarmers = farmers.filter(
+        (farmer) => farmer.location.District.toLowerCase() === district.toLowerCase()
       );
     } else if (cropName) {
-      filteredFarmers = mockFarmersData.filter(
+      filteredFarmers = farmers.filter(
         (farmer) => farmer.cropName.toLowerCase() === cropName.toLowerCase()
       );
     }
@@ -97,9 +54,17 @@ const CropSearch = () => {
 
   const userType = localStorage.getItem("role");
 
-
   const handleCardClick = (farmer) => {
-    navigate(`/farmer-details`, { state: { farmer } });
+    navigate(`/farmer-details`, { state: { farmer: { 
+        name: farmer.farmerName,
+         phone:farmer.phoneno,
+        crop: farmer.cropName,
+        quantity: farmer.quantity,
+        price: farmer.price,
+        photo: farmer.photo,
+        location: farmer.location,
+
+    }}});
   };
 
   return (
@@ -134,7 +99,7 @@ const CropSearch = () => {
         </button>
       </div>
 
-          {userType === 'buyer' && <MapComp/>}
+      {userType === 'buyer' && <MapComp />}
       {farmers.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {farmers.map((farmer, index) => (
@@ -143,7 +108,7 @@ const CropSearch = () => {
               className="border border-gray-300 rounded-lg p-4 cursor-pointer hover:shadow-lg transition-shadow duration-200"
               onClick={() => handleCardClick(farmer)}
             >
-              <img src={farmer.cropImage} alt={farmer.cropName} className="w-full h-32 object-cover rounded-lg mb-2" />
+              <img src={farmer.photo} alt={farmer.cropName} className="w-full h-32 object-cover rounded-lg mb-2" />
               <h3 className="text-lg font-semibold">{farmer.cropName}</h3>
               <p className="text-gray-600">Farmer: {farmer.farmerName}</p>
               <p className="text-gray-600">Quantity: {farmer.quantity} kg</p>

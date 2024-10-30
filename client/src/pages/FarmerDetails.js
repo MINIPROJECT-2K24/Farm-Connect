@@ -1,33 +1,36 @@
 import React from 'react';
-import { useLocation, Navigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 const FarmerDetails = () => {
-  const { state } = useLocation();
+    const location = useLocation();
+    const { farmer } = location.state || {}; // Using optional chaining to avoid errors if state is undefined
 
-  // Check if farmer data exists; if not, redirect to CropSearch or a fallback page
-  if (!state || !state.farmer) {
-    return <Navigate to="/crop-search" replace />;
-  }
-
-  const farmer = state.farmer;
-
-  return (
-    <div className="flex flex-col items-center p-6 bg-gray-100 min-h-screen">
-      <h2 className="text-3xl font-bold mb-4">{farmer.cropName}</h2>
-      <img 
-        src={farmer.cropImage} 
-        alt={farmer.cropName} 
-        className="w-96 h-72 object-cover mb-4" // Adjusted width and height
-      />
-      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
-        <p className="text-xl font-semibold">Farmer Name: {farmer.farmerName}</p>
-        <p className="text-xl">Location: {farmer.location}</p>
-        <p className="text-xl">Phone: {farmer.phoneNumber}</p>
-        <p className="text-xl">Quantity: {farmer.quantity} kg</p>
-        <p className="text-xl">Price: ₹{farmer.price}/kg</p>
-      </div>
-    </div>
-  );
+    return (
+        <div className="flex justify-center items-center min-h-screen bg-white">
+            <div className="border border-gray-300 rounded-lg p-4 w-80"> {/* Adjusted width for a medium card */}
+                <h2 className="text-2xl font-bold text-center mb-4">Farmer Details</h2>
+                {farmer ? (
+                    <>
+                        <div className="flex justify-center mb-4">
+                            <img 
+                                src={farmer.photo} 
+                                alt={farmer.crop} 
+                                className="w-64 h-64 object-cover rounded-lg" // Increased image size
+                            />
+                        </div>
+                        <h3 className="text-lg font-semibold">Crop: {farmer.crop}</h3>
+                        <p className="text-gray-600">Farmer: {farmer.name}</p>
+                        {/* <p className="text-gray-600">call: {farmer.phoneno}</p> */}
+                        <p className="text-gray-600">Quantity: {farmer.quantity} kg</p>
+                        <p className="text-gray-600">Price: ₹{farmer.price}/kg</p>
+                        <p className="text-gray-600">Location: {farmer.location.District}</p>
+                    </>
+                ) : (
+                    <p className="text-center text-gray-500 mt-4">No farmer details available.</p>
+                )}
+            </div>
+        </div>
+    );
 };
 
 export default FarmerDetails;
