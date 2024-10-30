@@ -98,11 +98,7 @@ export const addCrop = async (req, res) => {
 
 const getAllcrops = async (req, res) => {
   try {
-    const { cropName } = req.params;
-
-    const crops = await Crop.find({
-      cropName: { $regex: new RegExp(cropName, "i") },
-    });
+    const crops = await Crop.find({});
 
     res.json({ crops });
   } catch (err) {
