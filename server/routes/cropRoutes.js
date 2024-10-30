@@ -2,6 +2,7 @@ import express from "express";
 import upload from "../middleware/upload.js"; // Multer middleware import
 import {
   addCrop,
+  deleteCrop,
   getAllcrops,
   updateCrop,
 } from "../controllers/cropController.js";
@@ -20,5 +21,8 @@ router.put("/update/:id", updateCrop);
 
 //get req
 router.get("/getcrops", getAllcrops);
+
+//delete req
+router.delete("/delete/:id", deleteCrop);
 
 export default router;

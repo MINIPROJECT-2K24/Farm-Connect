@@ -186,4 +186,17 @@ export const updateCrop = async (req, res) => {
   }
 };
 
+export const deleteCrop = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const crop = await Crop.findByIdAndDelete(id);
+    if (!crop) {
+      return res.status(404).send({ msg: "Crop not found" });
+    }
+    res.status(200).send({ msg: "Crop deleted successfully", crop });
+  } catch (err) {
+    res.status(500).send({ msg: "Internal Server Error" });
+  }
+};
+
 export { getAllcrops };
