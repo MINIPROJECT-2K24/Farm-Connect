@@ -4,6 +4,7 @@ import {
   addCrop,
   deleteCrop,
   getAllcrops,
+  getCropbyUser,
   updateCrop,
 } from "../controllers/cropController.js";
 
@@ -21,6 +22,7 @@ router.put("/update/:id", updateCrop);
 
 //get req
 router.get("/getcrops", getAllcrops);
+router.get("/getSingleuser", getCropbyUser);
 
 //delete req
 router.delete("/delete/:id", deleteCrop);
