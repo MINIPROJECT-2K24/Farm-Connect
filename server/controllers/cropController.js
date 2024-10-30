@@ -199,4 +199,17 @@ export const deleteCrop = async (req, res) => {
   }
 };
 
+export const getCropbyUser = async (req, res) => {
+  try {
+    const phoneno = req.body;
+    const crop = await Crop.find(phoneno);
+    if (!crop) {
+      return res.status(404).send({ msg: "Crop not found" });
+    }
+    res.status(200).send({ msg: "Crop fetched successfully", crop });
+  } catch (err) {
+    res.status(500).send({ msg: "Internal Server Error" });
+  }
+};
+
 export { getAllcrops };
