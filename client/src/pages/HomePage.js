@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import MapComp from '../components/LeafletMap';
 
 const CropSearch = () => {
   const [district, setDistrict] = useState('');
@@ -94,6 +95,9 @@ const CropSearch = () => {
     setFarmers(filteredFarmers);
   };
 
+  const userType = localStorage.getItem("role");
+
+
   const handleCardClick = (farmer) => {
     navigate(`/farmer-details`, { state: { farmer } });
   };
@@ -130,6 +134,7 @@ const CropSearch = () => {
         </button>
       </div>
 
+          {userType === 'buyer' && <MapComp/>}
       {farmers.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {farmers.map((farmer, index) => (
