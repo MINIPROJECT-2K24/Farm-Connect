@@ -10,6 +10,6 @@ router.post(
   addCrop // Your addCrop function
 );
 
-router.get("/getcrops/:cropName", getAllcrops);
+router.get("/getcrops", getAllcrops);
 
 export default router;
