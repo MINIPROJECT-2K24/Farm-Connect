@@ -8,12 +8,6 @@ import mongoose from "mongoose";
 import connectDB from "./config/Db.js";
 import authRoutes from "./routes/authRoutes.js";
 import cropRoutes from "./routes/cropRoutes.js";
-import multer from 'multer';
-import path, { dirname } from 'path'
-
-
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
-
 const app = express();
 
 const PORT = process.env.PORT || 5000;  // Default port to 5000 if not defined
@@ -29,7 +23,7 @@ connectDB();
 // Routes middleware
 app.use("/api/users", authRoutes);
 app.use("/api/crops", cropRoutes);
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
