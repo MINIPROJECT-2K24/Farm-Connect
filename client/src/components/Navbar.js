@@ -15,6 +15,9 @@ const Navbar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("phoneNo");
+    localStorage.removeItem("role");
+
     navigate("/", { replace: true });
   };
 

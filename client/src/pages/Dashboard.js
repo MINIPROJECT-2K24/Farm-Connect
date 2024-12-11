@@ -1,36 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import CropDetails from './CropDetails'; // Ensure you import CropDetails
-import MyPost from './Mypost'; // Import the MyPost component
+import CropDetails from './CropDetails';
+import MyPost from './Mypost';
 
 const Dashboard = () => {
-    const [showCropDetails, setShowCropDetails] = useState(false); // State to manage CropDetails visibility
-    const [showMyPosts, setShowMyPosts] = useState(false); // State to manage MyPosts visibility
-    const [isAuthenticated, setIsAuthenticated] = useState(false); // State to manage authentication status
+    const [showCropDetails, setShowCropDetails] = useState(false);
+    const [showMyPosts, setShowMyPosts] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
-        const token = localStorage.getItem('token'); // Check for token in localStorage
-        setIsAuthenticated(!!token); // Set authentication state based on token presence
+        const token = localStorage.getItem('token');
+        setIsAuthenticated(!!token);
     }, []);
 
     const handleCreatePost = () => {
-        setShowCropDetails(true); // Show CropDetails when Create Post is clicked
-        setShowMyPosts(false); // Ensure MyPosts is hidden
+        setShowCropDetails(true);
+        setShowMyPosts(false);
     };
 
     const handleShowMyPosts = () => {
-        setShowMyPosts(true); // Show MyPosts when My Posts is clicked
-        setShowCropDetails(false); // Ensure CropDetails is hidden
+        setShowMyPosts(true);
+        setShowCropDetails(false);
     };
 
     const handleLogout = () => {
-        localStorage.removeItem('token'); // Remove the token from localStorage
-        setIsAuthenticated(false); // Update authentication state
-        window.location.href = '/login-farmer'; // Redirect to login page after logout
+        localStorage.removeItem('token');
+        setIsAuthenticated(false);
+        window.location.href = '/login-farmer';
     };
 
     return (
         <div className="flex min-h-screen bg-gray-100">
-            {/* Vertical Navbar with Pale Brown Background */}
             <nav className="bg-[#D8CFC4] w-64 p-6 shadow-lg">
                 <h1 className="text-2xl text-gray-800 font-bold mb-6">Dashboard</h1>
                 <ul>
@@ -63,14 +62,12 @@ const Dashboard = () => {
                 </ul>
             </nav>
 
-            {/* Main Content Area */}
             <div className="flex-1 p-6">
-                {/* Render CropDetails if showCropDetails is true */}
                 {showCropDetails ? (
                     <div>
                         <CropDetails />
                     </div>
-                ) : showMyPosts ? ( // Render MyPosts if showMyPosts is true
+                ) : showMyPosts ? (
                     <MyPost />
                 ) : (
                     <h2 className="text-xl text-center text-gray-600">Select an option from the menu</h2>

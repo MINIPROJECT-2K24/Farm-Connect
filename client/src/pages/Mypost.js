@@ -1,192 +1,216 @@
-import React, { useState } from 'react';
-import { toast, ToastContainer } from 'react-toastify'; // Importing toastify
-import 'react-toastify/dist/ReactToastify.css'; // Importing toastify styles
-
-// Sample data for demonstration without farmer ID
-const initialPosts = [
-    {
-        cropImage: 'https://via.placeholder.com/150', // Replace with actual image URL
-        cropName: 'Tomato',
-        phoneNumber: '123-456-7890',
-        price: 20,
-        quantity: 100,
-    },
-    {
-        cropImage: 'https://via.placeholder.com/150', // Replace with actual image URL
-        cropName: 'Potato',
-        phoneNumber: '987-654-3210',
-        price: 15,
-        quantity: 200,
-    },
-    // Add more posts as needed
-];
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
 
 const MyPost = () => {
-    const [posts, setPosts] = useState(initialPosts);
-    const [editIndex, setEditIndex] = useState(null); // Track the index of the post being edited
+    const [posts, setPosts] = useState([]);
+    const [editIndex, setEditIndex] = useState(-1);
+    
+
+    useEffect(() => {
+        const fetchCrops = async () => {
+            try {
+                const phoneno = localStorage.getItem('phoneNo');
+                const response = await axios.post(
+                    'http://localhost:5000/api/crops/getSingleuser',
+                    { phoneno: phoneno }
+                );
+                
+                if (Array.isArray(response.data.crop)) {
+                    setPosts(response.data.crop);
+                } else {
+                    setPosts([]);
+                }
+            } catch (error) {
+                alert("Failed to fetch crops.");
+                setPosts([]);
+            }
+        };
+        fetchCrops();
+    }, []);
 
     const handleEdit = (index) => {
-        setEditIndex(index); // Set the current index for editing
+        setEditIndex(index);
     };
 
-    const handleSave = (index) => {
-        // Save functionality is not needed as changes are made directly in the state
-        setEditIndex(null); // Reset the edit index
-        toast.success("Edit successful!"); // Show success message
-    };
+    const handleSave = async (index) => {
+        const updatedCrop = posts[index];
+        const cropId = posts[index]._id;
+        const token = localStorage.getItem('token'); // Retrieve token
 
-    const handleDelete = (index) => {
-        const filteredPosts = posts.filter((_, i) => i !== index);
-        setPosts(filteredPosts);
-        toast.success("Post deleted!"); // Show delete confirmation
-    };
-
-    const handleFieldChange = (index, field, value) => {
-        const updatedPosts = posts.map((post, i) => {
-            if (i === index) {
-                return {
-                    ...post,
-                    [field]: value,
-                };
+        try {
+            const response = await axios.put(
+                `http://localhost:5000/api/crops/update/${cropId}`,
+                updatedCrop,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            console.log(response.status)
+            if (response.status === 200) {
+                // Handle success response
+                setEditIndex(-1);
+                alert("crop updated successfully")
+                
+            } else {
+                // Handle failure response
+                alert("Failed to update crop.");
             }
-            return post;
-        });
-        setPosts(updatedPosts); // Update state with new values
-    };
-
-    const handleImageChange = (index, event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                const updatedPosts = posts.map((post, i) => {
-                    if (i === index) {
-                        return {
-                            ...post,
-                            cropImage: reader.result, // Update the crop image
-                        };
-                    }
-                    return post;
-                });
-                setPosts(updatedPosts);
-                toast.success("Image updated!"); // Show success message
-            };
-            reader.readAsDataURL(file); // Read the file as a data URL
+        } catch (error) {
+            console.error("Error updating crop:", error);
+            toast.error("Failed to update crop.");
         }
     };
 
+    const handleDelete = async (index) => {
+        const cropId = posts[index]._id;
+        try {
+            const response = await axios.delete(`http://localhost:5000/api/crops/delete/${cropId}`);
+            
+            if (response.status === 200) {
+                const newPosts = posts.filter((_, i) => i !== index);
+                setPosts(newPosts);
+                alert("crop deleted successfully")
+            } else {
+                alert("Failed to delete crop.");
+            }
+        } catch (error) {
+            console.error("Error deleting crop:", error);
+            toast.error("Failed to delete crop.");
+        }
+    };
+
+    const handleFieldChange = (index, field, value) => {
+        const updatedPosts = [...posts];
+        updatedPosts[index][field] = value;
+        setPosts(updatedPosts);
+    };
+  
+    const handleImageChange = (index, event) => {
+        const file = event.target.files[0];
+        if (file) {
+          const formData = new FormData();
+          formData.append('image', file); // Append the selected image to the form data
+      
+          // Send the image to the backend using Axios
+          axios
+            .post('http://localhost:5000/api/crops/uploadImage', formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data', // Set the correct content type
+              },
+            })
+            .then((response) => {
+              const imageUrl = response.data.imageUrl; // Get the image URL from the response
+      
+              const updatedPosts = posts.map((post, i) => {
+                if (i === index) {
+                  return {
+                    ...post,
+                    cropImage: imageUrl, // Update the cropImage field with the new image URL
+                  };
+                }
+                return post;
+              });
+      
+              setPosts(updatedPosts);
+              toast.success('Image uploaded successfully!'); // Show success message
+            })
+            .catch((error) => {
+              console.error('Error uploading image:', error);
+              toast.error('Error uploading image');
+            });
+        }
+      };
+
     return (
-        <div className="farmer-list" style={styles.list}>
-            <ToastContainer /> {/* Toast container for notifications */}
-            {posts.map((post, index) => (
-                <div key={index} className="farmer-item" style={styles.item}>
-                    <img src={post.cropImage} alt={post.cropName} className="crop-image" style={styles.image} />
-                    <div className="farmer-details" style={styles.details}>
-                        {editIndex === index ? (
-                            <>
-                                <input
-                                    type="text"
-                                    value={post.cropName}
-                                    onChange={(e) => handleFieldChange(index, 'cropName', e.target.value)}
-                                    className="input-field"
-                                    style={styles.input}
-                                />
-                                <p className="phone-number">Phone: 
+        <div className="p-5 bg-gray-100 rounded-lg">
+            <ToastContainer />
+            {posts.length > 0 ? (
+                posts.map((post, index) => (
+                    <div key={post._id} className="flex flex-col border border-gray-300 rounded-lg p-5 mb-5 bg-white shadow-md">
+                        <img 
+                            src={post.cropImage} 
+                            alt={post.cropName} 
+                            className="w-full h-auto rounded-lg mb-4" 
+                        />
+                        <div className="flex-1 mb-4">
+                            {editIndex === index ? (
+                                <>
+                                    <div className="mb-4">
+                                        <label className="font-bold mb-2 block">Crop Name:</label>
+                                        <input
+                                            type="text"
+                                            value={post.cropName}
+                                            onChange={(e) => handleFieldChange(index, 'cropName', e.target.value)}
+                                            className="border border-gray-300 rounded-lg p-2 w-full"
+                                        />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label className="font-bold mb-2 block">Price:</label>
+                                        <input
+                                            type="number"
+                                            value={post.price}
+                                            onChange={(e) => handleFieldChange(index, 'price', parseFloat(e.target.value))}
+                                            className="border border-gray-300 rounded-lg p-2 w-full"
+                                        />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label className="font-bold mb-2 block">Quantity:</label>
+                                        <input
+                                            type="number"
+                                            value={post.quantity}
+                                            onChange={(e) => handleFieldChange(index, 'quantity', parseInt(e.target.value))}
+                                            className="border border-gray-300 rounded-lg p-2 w-full"
+                                        />
+                                    </div>
                                     <input
-                                        type="text"
-                                        value={post.phoneNumber}
-                                        onChange={(e) => handleFieldChange(index, 'phoneNumber', e.target.value)}
-                                        className="input-field"
-                                        style={styles.input}
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => handleImageChange(index, e)}
+                                        className="border border-gray-300 rounded-lg p-2 w-full"
                                     />
-                                </p>
-                                <p className="price">Price: $
-                                    <input
-                                        type="number"
-                                        value={post.price}
-                                        onChange={(e) => handleFieldChange(index, 'price', parseFloat(e.target.value))}
-                                        className="input-field"
-                                        style={styles.input}
-                                    />
-                                </p>
-                                <p className="quantity">Quantity: 
-                                    <input
-                                        type="number"
-                                        value={post.quantity}
-                                        onChange={(e) => handleFieldChange(index, 'quantity', parseInt(e.target.value))}
-                                        className="input-field"
-                                        style={styles.input}
-                                    />
-                                </p>
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={(e) => handleImageChange(index, e)}
-                                    className="image-input"
-                                />
-                            </>
-                        ) : (
-                            <>
-                                <h2 className="crop-name">{post.cropName}</h2>
-                                <p className="phone-number">Phone: {post.phoneNumber}</p>
-                                <p className="price">Price: ${post.price.toFixed(2)}</p>
-                                <p className="quantity">Quantity: {post.quantity}</p>
-                            </>
-                        )}
+                                </>
+                            ) : (
+                                <>
+                                    <h2 className="text-xl font-semibold mb-2">{post.cropName}</h2>
+                                    <p className="text-gray-600">Phone: {post.phoneNumber}</p>
+                                    <p className="text-gray-600">Price: ${post.price.toFixed(2)}</p>
+                                    <p className="text-gray-600">Quantity: {post.quantity}</p>
+                                </>
+                            )}
+                        </div>
+                        <div className="flex justify-between">
+                            {editIndex === index ? (
+                                <button 
+                                    onClick={() => handleSave(index)} 
+                                    className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+                                >
+                                    💾 Save
+                                </button>
+                            ) : (
+                                <button 
+                                    onClick={() => handleEdit(index)} 
+                                    className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+                                >
+                                    ✏️ Edit
+                                </button>
+                            )}
+                            <button 
+                                onClick={() => handleDelete(index)} 
+                                className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+                            >
+                                🗑️ Delete
+                            </button>
+                        </div>
                     </div>
-                    <div className="action-buttons" style={styles.actions}>
-                        {editIndex === index ? (
-                            <button onClick={() => handleSave(index)} className="save-button">💾 Save</button>
-                        ) : (
-                            <button onClick={() => handleEdit(index)} className="edit-button">✏️ Edit</button>
-                        )}
-                        <button onClick={() => handleDelete(index)} className="delete-button">🗑️ Delete</button>
-                    </div>
-                </div>
-            ))}
+                ))
+            ) : (
+                <p>No crops found.</p>
+            )}
         </div>
     );
-};
-
-// Inline styles for alignment
-const styles = {
-    list: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center', // Center alignment
-    },
-    item: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        backgroundColor: '#fff', // White background for items
-        border: '1px solid #ddd',
-        borderRadius: '8px',
-        padding: '1rem',
-        marginBottom: '1rem',
-        width: '80%', // Width of the items
-    },
-    image: {
-        width: '100px', // Fixed width for images
-        height: '100px', // Fixed height for images
-        marginRight: '1rem',
-        borderRadius: '8px', // Rounded corners for images
-    },
-    details: {
-        flex: '1',
-    },
-    actions: {
-        display: 'flex',
-        flexDirection: 'column', // Vertical alignment of buttons
-        alignItems: 'flex-end', // Right alignment
-    },
-    input: {
-        margin: '0.5rem 0',
-        border: '1px solid #ddd',
-        borderRadius: '4px',
-        padding: '0.5rem',
-        width: '100%', // Full width for inputs
-    },
 };
 
 export default MyPost;

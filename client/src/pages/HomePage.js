@@ -6,7 +6,8 @@ import axios from 'axios';
 const CropSearch = () => {
   const [district, setDistrict] = useState('');
   const [cropName, setCropName] = useState('');
-  const [farmers, setFarmers] = useState([]);
+  const [allFarmers, setAllFarmers] = useState([]); // Original unfiltered data
+  const [farmers, setFarmers] = useState([]); // Filtered data for display
 
   const navigate = useNavigate();
 
@@ -25,29 +26,32 @@ const CropSearch = () => {
   const fetchFarmersData = async () => {
     try {
       const response = await axios.get('http://localhost:5000/api/crops/getcrops');
-      setFarmers(response.data.crops); // Assuming response structure is { crops: [...] }
+      setAllFarmers(response.data.crops); // Assuming response structure is { crops: [...] }
+      setFarmers(response.data.crops); // Initialize filtered data with all data
     } catch (error) {
       console.error("Error fetching farmers data:", error);
     }
   };
 
   const handleSearch = () => {
-    let filteredFarmers = farmers;
+    const searchDistrict = district?.trim().toLowerCase();
+    const searchCropName = cropName?.trim().toLowerCase();
 
-    if (district && cropName) {
-      filteredFarmers = farmers.filter((farmer) =>
-        farmer.location.District.toLowerCase() === district.toLowerCase() &&
-        farmer.cropName.toLowerCase() === cropName.toLowerCase()
-      );
-    } else if (district) {
-      filteredFarmers = farmers.filter(
-        (farmer) => farmer.location.District.toLowerCase() === district.toLowerCase()
-      );
-    } else if (cropName) {
-      filteredFarmers = farmers.filter(
-        (farmer) => farmer.cropName.toLowerCase() === cropName.toLowerCase()
-      );
-    }
+    const filteredFarmers = allFarmers.filter((farmer) => {
+      const farmerDistrict = farmer.location.District?.trim().toLowerCase();
+      const farmerCropName = farmer.cropName?.trim().toLowerCase();
+
+      if (searchDistrict && searchCropName) {
+        return farmerDistrict === searchDistrict && farmerCropName === searchCropName;
+      }
+      if (searchDistrict) {
+        return farmerDistrict === searchDistrict;
+      }
+      if (searchCropName) {
+        return farmerCropName === searchCropName;
+      }
+      return true;
+    });
 
     setFarmers(filteredFarmers);
   };
@@ -57,13 +61,12 @@ const CropSearch = () => {
   const handleCardClick = (farmer) => {
     navigate(`/farmer-details`, { state: { farmer: { 
         name: farmer.farmerName,
-         phone:farmer.phoneno,
+        phone: farmer.phoneno,
         crop: farmer.cropName,
         quantity: farmer.quantity,
         price: farmer.price,
         photo: farmer.photo,
         location: farmer.location,
-
     }}});
   };
 

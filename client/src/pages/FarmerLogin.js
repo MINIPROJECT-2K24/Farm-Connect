@@ -34,16 +34,10 @@ const FarmerLogin = () => {
       );
       console.log(response);
       const { token, farmerName, location, phoneNumber, latitude, longitude } = response.data;
-
+      console.log(phoneNumber);
+      
       localStorage.setItem("token", token);
-      localStorage.setItem('farmerData', JSON.stringify({
-        farmerName,
-        phoneNumber,
-        location: {
-          latitude,
-          longitude,
-        },
-      }));
+      localStorage.setItem("phoneNo",response.data.user.phoneNumber)
       localStorage.setItem("role", response.data.user.userType);
 
       navigate('/crop-search'); // Navigate to the crop search page
