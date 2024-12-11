@@ -89,10 +89,14 @@ const CropDetails = () => {
 
       {/* Form for adding crop details */}
       <form onSubmit={handleSubmit}>
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Add Crop Details</h2>
-        
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">
+          Add Crop Details
+        </h2>
+
         <div className="mb-4">
-          <label className="block text-gray-700 font-semibold mb-1">Crop Name:</label>
+          <label className="block text-gray-700 font-semibold mb-1">
+            Crop Name:
+          </label>
           <input
             type="text"
             value={cropName}
@@ -103,7 +107,9 @@ const CropDetails = () => {
         </div>
 
         <div className="mb-4">
-          <label className="block text-gray-700 font-semibold mb-1">Price:</label>
+          <label className="block text-gray-700 font-semibold mb-1">
+            Price:
+          </label>
           <input
             type="number"
             value={price}
@@ -114,7 +120,9 @@ const CropDetails = () => {
         </div>
 
         <div className="mb-4">
-          <label className="block text-gray-700 font-semibold mb-1">Quantity:</label>
+          <label className="block text-gray-700 font-semibold mb-1">
+            Quantity:
+          </label>
           <input
             type="number"
             value={quantity}
@@ -125,7 +133,9 @@ const CropDetails = () => {
         </div>
 
         <div className="mb-4">
-          <label className="block text-gray-700 font-semibold mb-1">Photo:</label>
+          <label className="block text-gray-700 font-semibold mb-1">
+            Photo:
+          </label>
           <input
             type="file"
             accept="image/*"
@@ -138,7 +148,9 @@ const CropDetails = () => {
         <button
           type="submit"
           disabled={loading}
-          className={`w-full py-2 rounded-md text-white ${loading ? 'bg-gray-500' : 'bg-blue-600 hover:bg-blue-700'} transition duration-200`}
+          className={`w-full py-2 rounded-md text-white ${
+            loading ? "bg-gray-500" : "bg-blue-600 hover:bg-blue-700"
+          } transition duration-200`}
         >
           {loading ? "Adding Crop..." : "Add Crop"}
         </button>

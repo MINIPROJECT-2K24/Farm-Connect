@@ -1,80 +1,72 @@
-import React, { useState, useEffect } from 'react';
-import CropDetails from './CropDetails';
-import MyPost from './Mypost';
+import React, { useState, useEffect } from "react";
+import CropDetails from "./CropDetails";
+import MyPost from "./Mypost";
 
 const Dashboard = () => {
-    const [showCropDetails, setShowCropDetails] = useState(false);
-    const [showMyPosts, setShowMyPosts] = useState(false);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showCropDetails, setShowCropDetails] = useState(false);
+  const [showMyPosts, setShowMyPosts] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        setIsAuthenticated(!!token);
-    }, []);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsAuthenticated(!!token);
+  }, []);
 
-    const handleCreatePost = () => {
-        setShowCropDetails(true);
-        setShowMyPosts(false);
-    };
+  const handleCreatePost = () => {
+    setShowCropDetails(true);
+    setShowMyPosts(false);
+  };
 
-    const handleShowMyPosts = () => {
-        setShowMyPosts(true);
-        setShowCropDetails(false);
-    };
+  const handleShowMyPosts = () => {
+    setShowMyPosts(true);
+    setShowCropDetails(false);
+  };
 
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        setIsAuthenticated(false);
-        window.location.href = '/login-farmer';
-    };
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsAuthenticated(false);
+    window.location.href = "/login-farmer";
+  };
 
-    return (
-        <div className="flex min-h-screen bg-gray-100">
-            <nav className="bg-[#D8CFC4] w-64 p-6 shadow-lg">
-                <h1 className="text-2xl text-gray-800 font-bold mb-6">Dashboard</h1>
-                <ul>
-                    <li className="mb-4">
-                        <button 
-                            onClick={handleCreatePost}
-                            className="w-full text-left py-2 px-4 rounded-lg bg-white text-gray-800 hover:bg-gray-300 transition duration-200"
-                        >
-                            Create Post
-                        </button>
-                    </li>
-                    <li>
-                        <button 
-                            onClick={handleShowMyPosts}
-                            className="w-full text-left py-2 px-4 rounded-lg bg-white text-gray-800 hover:bg-gray-300 transition duration-200"
-                        >
-                            My Posts
-                        </button>
-                    </li>
-                    {isAuthenticated && (
-                        <li className="mt-4">
-                            <button 
-                                onClick={handleLogout}
-                                className="w-full text-left py-2 px-4 rounded-lg bg-red-500 text-white hover:bg-red-600 transition duration-200"
-                            >
-                                Logout
-                            </button>
-                        </li>
-                    )}
-                </ul>
-            </nav>
+  return (
+    <div className="flex min-h-screen bg-gray-100">
+      <nav className="bg-[#D8CFC4] w-64 p-6 shadow-lg">
+        <h1 className="text-2xl text-gray-800 font-bold mb-6">Dashboard</h1>
+        <ul>
+          <li className="mb-4">
+            <button
+              onClick={handleCreatePost}
+              className="w-full text-left py-2 px-4 rounded-lg bg-white text-gray-800 hover:bg-gray-300 transition duration-200"
+            >
+              Create Post
+            </button>
+          </li>
+          <li>
+            <button
+              onClick={handleShowMyPosts}
+              className="w-full text-left py-2 px-4 rounded-lg bg-white text-gray-800 hover:bg-gray-300 transition duration-200"
+            >
+              My Posts
+            </button>
+          </li>
+        </ul>
+      </nav>
 
-            <div className="flex-1 p-6">
-                {showCropDetails ? (
-                    <div>
-                        <CropDetails />
-                    </div>
-                ) : showMyPosts ? (
-                    <MyPost />
-                ) : (
-                    <h2 className="text-xl text-center text-gray-600">Select an option from the menu</h2>
-                )}
-            </div>
-        </div>
-    );
+      <div className="flex-1 p-6">
+        {showCropDetails ? (
+          <div>
+            <CropDetails />
+          </div>
+        ) : showMyPosts ? (
+          <MyPost />
+        ) : (
+          <h2 className="text-xl text-center text-gray-600">
+            Select an option from the menu
+          </h2>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default Dashboard;
