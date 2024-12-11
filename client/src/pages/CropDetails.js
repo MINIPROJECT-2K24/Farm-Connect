@@ -78,7 +78,7 @@ const CropDetails = () => {
   // };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
+    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md mt-12">
       {/* Logout button */}
       {/* <button
         onClick={handleLogout}

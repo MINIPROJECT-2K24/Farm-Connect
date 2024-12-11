@@ -90,7 +90,7 @@ const MyPost = () => {
   };
 
   return (
-    <div className="p-5 bg-gray-100 rounded-lg">
+    <div className="p-5 bg-gray-100 rounded-lg mt-10">
       <ToastContainer />
       {posts.length > 0 ? (
         posts.map((post, index) => (
@@ -101,7 +101,7 @@ const MyPost = () => {
             <img
               src={post.photo}
               alt={post.cropName}
-              className="w-full h-auto rounded-lg mb-4"
+              className="w-40 h-50 rounded-lg mb-4"
             />
             <div className="flex-1 mb-4">
               {editIndex === index ? (

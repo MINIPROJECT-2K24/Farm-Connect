@@ -20,8 +20,8 @@ const FarmerDetails = () => {
                         </div>
                         <h3 className="text-lg font-semibold">Crop: {farmer.crop}</h3>
                         <p className="text-gray-600">Farmer: {farmer.name}</p>
-                        {/* <p className="text-gray-600">call: {farmer.phoneno}</p> */}
-                        <p className="text-gray-600">Quantity: {farmer.quantity} kg</p>
+                        <p className="text-gray-600">call: {farmer.phone}</p> 
+                        <p className="text-gray-600">Quantity:{farmer.quantity} kg</p>
                         <p className="text-gray-600">Price: ₹{farmer.price}/kg</p>
                         <p className="text-gray-600">Location: {farmer.location.District}</p>
                     </>

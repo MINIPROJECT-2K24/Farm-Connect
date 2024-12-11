@@ -30,7 +30,7 @@ const Dashboard = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      <nav className="bg-[#D8CFC4] w-64 p-6 shadow-lg">
+      <nav className="bg-[#D8CFC4] w-64 p-6 shadow-lg fixed top-0 left-0 h-full z-10">
         <h1 className="text-2xl text-gray-800 font-bold mb-6">Dashboard</h1>
         <ul>
           <li className="mb-4">
@@ -52,7 +52,7 @@ const Dashboard = () => {
         </ul>
       </nav>
 
-      <div className="flex-1 p-6">
+      <div className="flex-1 p-6 ml-64">
         {showCropDetails ? (
           <div>
             <CropDetails />

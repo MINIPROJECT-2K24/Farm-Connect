@@ -1,17 +1,22 @@
-/* Dashboard.css */
-
 .dashboard-container {
     display: flex;
     height: 100vh; /* Full height of the viewport */
 }
 
 .dashboard-navbar {
+    position: fixed; /* Fix the navbar to the side of the screen */
+    top: 0; /* Align it to the top */
+    left: 0; /* Align it to the left */
     width: 150px; /* Fixed width for the sidebar */
     background-color: #2d3748; /* Dark gray background */
-    height: 100%; /* Full height */
+    height: 100vh; /* Full height of the viewport */
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
     padding: 1rem; /* Padding inside navbar */
     color: white; /* White text */
+    z-index: 1000; /* Ensure it stays above other content */
+    overflow-y: auto; /* Allow scrolling inside the sidebar if content overflows */
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
 }
 
 .dashboard-navbar h1 {
@@ -46,12 +51,13 @@
 }
 
 .dashboard-content {
+    margin-left: 160px; /* Space between navbar and content (adjusted for fixed navbar width) */
     flex: 1; /* Take remaining space */
     padding: 2rem; /* Padding for content */
     background-color: #edf2f7; /* Light gray background for content */
-    margin-left: 1rem; /* Space between navbar and content */
     border-radius: 0.25rem; /* Optional: Rounded corners for content */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: Subtle shadow for content */
+    overflow-y: auto; /* Content will scroll independently */
 }
 
 .dashboard-content h2 {
