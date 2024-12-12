@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  Polyline,
+} from "react-leaflet";
 import "leaflet/dist/leaflet.css"; // Import Leaflet CSS
 import L from "leaflet";
 
@@ -18,7 +24,9 @@ const MapView = ({ farmers, buyerPosition }) => {
     let minDistance = Infinity;
 
     farmers.forEach((farmer) => {
-      const distance = L.latLng(buyerPosition).distanceTo(L.latLng(farmer.latitude, farmer.longitude));
+      const distance = L.latLng(buyerPosition).distanceTo(
+        L.latLng(farmer.latitude, farmer.longitude)
+      );
       if (distance < minDistance) {
         minDistance = distance;
         nearest = { ...farmer, distance: distance };
@@ -31,7 +39,11 @@ const MapView = ({ farmers, buyerPosition }) => {
   const nearestFarmer = findNearestFarmer(farmers);
 
   return (
-    <MapContainer center={buyerPosition} zoom={13} style={{ height: "500px", width: "100%" }}>
+    <MapContainer
+      center={buyerPosition}
+      zoom={13}
+      style={{ height: "500px", width: "100%" }}
+    >
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -53,7 +65,10 @@ const MapView = ({ farmers, buyerPosition }) => {
       {nearestFarmer && (
         <>
           <Polyline
-            positions={[buyerPosition, [nearestFarmer.latitude, nearestFarmer.longitude]]}
+            positions={[
+              buyerPosition,
+              [nearestFarmer.latitude, nearestFarmer.longitude],
+            ]}
             color="blue"
             weight={4}
           />
@@ -83,11 +98,26 @@ const MapComp = () => {
 
   useEffect(() => {
     const fetchFarmers = async () => {
-       const mockFarmersData = [
-         { latitude: 13.3391, longitude: 77.1010, name: "Farmer A", crop: "Wheat" },
-         { latitude: 13.3441, longitude: 77.1090, name: "Farmer B", crop: "Corn" },
-         { latitude: 13.3301, longitude: 77.0950, name: "Farmer C", crop: "Rice" },
-       ];
+      const mockFarmersData = [
+        {
+          latitude: 12.959744,
+          longitude: 77.627392,
+          name: "tiptur A",
+          crop: "ragi",
+        },
+        {
+          latitude: 12.959744,
+          longitude: 77.627392,
+          name: "Farmer B",
+          crop: "Corn",
+        },
+        {
+          latitude: 13.3301,
+          longitude: 77.095,
+          name: "Farmer C",
+          crop: "Rice",
+        },
+      ];
 
       setTimeout(() => {
         setFarmers(mockFarmersData);
@@ -97,23 +127,17 @@ const MapComp = () => {
     fetchFarmers();
   }, []);
 
+  console.log();
 
-
-
-console.log();
-
-   useEffect(() => {
+  useEffect(() => {
     const longitude = localStorage.getItem("longitude");
-const latitude = localStorage.getItem("latitude");
-     if (longitude && latitude) {
-
-      
-      
-       setBuyerPosition([latitude,longitude]);  
-     } else {
-       alert("Location data is missing in localStorage.");
-     }
-   }, []);
+    const latitude = localStorage.getItem("latitude");
+    if (longitude && latitude) {
+      setBuyerPosition([latitude, longitude]);
+    } else {
+      alert("Location data is missing in localStorage.");
+    }
+  }, []);
 
   const token = localStorage.getItem("token");
 

@@ -1,7 +1,9 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const FarmerRegister = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: "",
     phoneNumber: "",
@@ -11,7 +13,7 @@ const FarmerRegister = () => {
     district: "",
     postalCode: "",
   });
-
+  const [location, setLocation] = useState(null); // Store location
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -20,12 +22,45 @@ const FarmerRegister = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const getLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setLocation({ latitude, longitude });
+        },
+        (error) => {
+          console.error("Error getting location:", error.message);
+          alert(
+            "Unable to access your location. Please allow location access and try again."
+          );
+        }
+      );
+    } else {
+      alert("Geolocation is not supported by your browser.");
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
-    const { fullName, phoneNumber, password, city, state, district, postalCode } = formData;
+    const {
+      fullName,
+      phoneNumber,
+      password,
+      city,
+      state,
+      district,
+      postalCode,
+    } = formData;
+
+    if (!location) {
+      setError("Location is required. Please allow location access.");
+      setLoading(false);
+      return;
+    }
 
     const registrationData = {
       fullName,
@@ -38,8 +73,8 @@ const FarmerRegister = () => {
         district,
         postalCode,
       },
+      location, // Include latitude and longitude
     };
-
     console.log(registrationData);
 
     try {
@@ -48,10 +83,14 @@ const FarmerRegister = () => {
         registrationData
       );
       alert("Farmer registration successful!");
-      console.log(response.data);
+      navigate("/login-farmer");
+      console.log(registrationData);
     } catch (error) {
       setError("Registration failed! Please check the details and try again.");
-      console.error("Registration error:", error.response?.data || error.message);
+      console.error(
+        "Registration error:",
+        error.response?.data || error.message
+      );
     } finally {
       setLoading(false);
     }
@@ -59,9 +98,14 @@ const FarmerRegister = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-white">
-      <form onSubmit={handleSubmit} className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
-        <h2 className="text-2xl font-bold text-center text-gray-700 mb-6">Farmer Registration</h2>
-        
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full"
+      >
+        <h2 className="text-2xl font-bold text-center text-gray-700 mb-6">
+          Farmer Registration
+        </h2>
+
         {/* Full Name Input */}
         <div className="mb-4">
           <input
@@ -151,11 +195,22 @@ const FarmerRegister = () => {
           />
         </div>
 
+        {/* Get Location Button */}
+        <button
+          type="button"
+          onClick={getLocation}
+          className="mb-4 w-full bg-green-500 text-white font-semibold py-3 rounded-lg hover:bg-green-600 transition duration-200"
+        >
+          Get Location
+        </button>
+
         {/* Submit Button */}
         <button
           type="submit"
           disabled={loading}
-          className={`w-full bg-blue-500 text-white font-semibold py-3 rounded-lg hover:bg-blue-600 transition duration-200 ${loading && 'opacity-50 cursor-not-allowed'}`}
+          className={`w-full bg-blue-500 text-white font-semibold py-3 rounded-lg hover:bg-blue-600 transition duration-200 ${
+            loading && "opacity-50 cursor-not-allowed"
+          }`}
         >
           {loading ? "Registering..." : "Register"}
         </button>

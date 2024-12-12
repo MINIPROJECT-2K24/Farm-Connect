@@ -9,10 +9,11 @@ const userSchema = new mongoose.Schema(
     email: {
       type: String,
       required: function () {
-        return this.userType === "buyer";
+        return this.userType === "buyer"; // Only require email for buyers
       },
-      unique: true,
-      sparse: true,
+      unique: function () {
+        return this.userType === "buyer"; // Only enforce uniqueness for buyers
+      },
     },
     phoneNumber: {
       type: String,

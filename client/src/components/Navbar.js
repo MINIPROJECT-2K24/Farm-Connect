@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import './Navbar.css'; // Import the CSS file
+import "./Navbar.css";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -9,7 +9,7 @@ const Navbar = () => {
   useEffect(() => {
     const storedRole = localStorage.getItem("role");
     if (storedRole) {
-      setRole(storedRole);  // Only update if not set
+      setRole(storedRole); // Only update if not set
     }
   }, []);
 
@@ -33,10 +33,7 @@ const Navbar = () => {
             Dashboard
           </button>
         )}
-        <button
-          onClick={handleLogout}
-          className="navbar-button"
-        >
+        <button onClick={handleLogout} className="navbar-button">
           Logout
         </button>
       </div>

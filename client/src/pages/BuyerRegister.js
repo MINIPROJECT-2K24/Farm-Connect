@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 const BuyerRegister = () => {
@@ -11,7 +11,34 @@ const BuyerRegister = () => {
     state: "",
     district: "",
     postalCode: "",
+    location: {
+      latitude: null,
+      longitude: null,
+    },
   });
+
+  // Function to fetch location
+  const fetchLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setFormData((prevData) => ({
+            ...prevData,
+            location: {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+            },
+          }));
+        },
+        (error) => {
+          console.error("Error getting location", error);
+          alert("Unable to retrieve your location.");
+        }
+      );
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,8 +47,23 @@ const BuyerRegister = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { fullName, email, password, city, state, district, postalCode } =
-      formData;
+    const {
+      fullName,
+      email,
+      password,
+      city,
+      state,
+      district,
+      postalCode,
+      location,
+    } = formData;
+
+    // Ensure the location data is available
+    if (!location.latitude || !location.longitude) {
+      alert("Unable to retrieve location data.");
+      return;
+    }
+
     const registrationData = {
       fullName,
       email,
@@ -33,6 +75,10 @@ const BuyerRegister = () => {
         state,
         district,
         postalCode,
+      },
+      location: {
+        latitude: location.latitude,
+        longitude: location.longitude,
       },
     };
 
@@ -59,7 +105,9 @@ const BuyerRegister = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
-        <h2 className="text-2xl font-bold text-center text-gray-700 mb-6">Buyer Registration</h2>
+        <h2 className="text-2xl font-bold text-center text-gray-700 mb-6">
+          Buyer Registration
+        </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <input
@@ -139,6 +187,16 @@ const BuyerRegister = () => {
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
+
+          {/* Button to fetch location */}
+          <button
+            type="button"
+            onClick={fetchLocation}
+            className="w-full bg-green-500 text-white font-semibold py-3 rounded-lg hover:bg-green-600 transition duration-200 mb-4"
+          >
+            Fetch Location
+          </button>
+
           <button
             type="submit"
             className="w-full bg-blue-500 text-white font-semibold py-3 rounded-lg hover:bg-blue-600 transition duration-200"

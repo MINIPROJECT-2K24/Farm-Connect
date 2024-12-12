@@ -2,37 +2,36 @@ import dotenv from "dotenv";
 import User from "../models/userSchema.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import axios from "axios";
 
 dotenv.config();
 
-const LOCATIONIQ_API_KEY = "pk.a3bd8ec1188a599c1b6a32248b5d0edd";
-
-const getCoordinates = async (city, state, district, postalCode) => {
-  const address = `${district ? district + ", " : ""}${city}, ${state}, ${postalCode}, India`;
-  const url = `https://us1.locationiq.com/v1/search.php?key=${LOCATIONIQ_API_KEY}&q=${encodeURIComponent(address)}&format=json`;
-
-  try {
-    const response = await axios.get(url);
-    const results = response.data;
-
-    if (results.length > 0) {
-      const { lat, lon } = results[0];
-      return { latitude: parseFloat(lat), longitude: parseFloat(lon) };
-    } else {
-      throw new Error("No results found for the given address.");
-    }
-  } catch (error) {
-    console.error("Error fetching coordinates:", error.message);
-    throw error;
-  }
-};
-
+// Register Function
 export const registerUser = async (req, res) => {
-  const { fullName, email, phoneNumber, password, userType, address } = req.body;
+  const {
+    fullName,
+    email,
+    phoneNumber,
+    password,
+    userType,
+    address,
+    location,
+  } = req.body;
 
-  if (!fullName || !phoneNumber || !password || !userType || !address || !address.city || !address.state || !address.district || !address.postalCode) {
-    return res.status(400).json({ message: "Please provide all required fields." });
+  if (
+    !fullName ||
+    !phoneNumber ||
+    !password ||
+    !userType ||
+    !address ||
+    !address.city ||
+    !address.state ||
+    !address.district ||
+    !address.postalCode ||
+    !location
+  ) {
+    return res.status(400).json({
+      message: "Please provide all required fields, including location.",
+    });
   }
 
   try {
@@ -46,7 +45,6 @@ export const registerUser = async (req, res) => {
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
-      const coordinates = await getCoordinates(address.city, address.state, address.district, address.postalCode);
 
       const user = new User({
         fullName,
@@ -56,13 +54,15 @@ export const registerUser = async (req, res) => {
         address,
         location: {
           type: "Point",
-          coordinates: [coordinates.longitude, coordinates.latitude],
+          coordinates: [location.longitude, location.latitude],
         },
       });
 
       await user.save();
-      return res.status(201).json({ message: "Farmer registered successfully!", user });
-    } else if (userType === "buyer") {
+      return res
+        .status(201)
+        .json({ message: "Farmer registered successfully!", user });
+    } else {
       if (email) {
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -74,7 +74,6 @@ export const registerUser = async (req, res) => {
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
-      const coordinates = await getCoordinates(address.city, address.state, address.district, address.postalCode || "");
 
       const newUser = new User({
         fullName,
@@ -85,14 +84,14 @@ export const registerUser = async (req, res) => {
         address,
         location: {
           type: "Point",
-          coordinates: [coordinates.longitude, coordinates.latitude],
+          coordinates: [location.longitude, location.latitude],
         },
       });
 
       await newUser.save();
-      return res.status(201).json({ message: "Buyer registered successfully!", user: newUser });
-    } else {
-      return res.status(400).json({ message: "Invalid user type." });
+      return res
+        .status(201)
+        .json({ message: "Buyer registered successfully!", user: newUser });
     }
   } catch (error) {
     console.error("Registration error:", error);
@@ -100,57 +99,85 @@ export const registerUser = async (req, res) => {
   }
 };
 
+// Login Function
 export const loginUser = async (req, res) => {
+  const { phoneNumber, email, password, userType } = req.body;
+  console.log(req.body);
+
+  // Ensure at least one identifier (phone or email) is provided
+  if (!phoneNumber && !email) {
+    return res.status(400).json({
+      message: "Please provide identifier (email/phone).",
+    });
+  }
+
+  // Ensure password and userType are provided
+  if (!password || !userType) {
+    return res.status(400).json({
+      message: "Please provide password, and userType.",
+    });
+  }
+
   try {
-    const { email, phoneNumber, password, userType } = req.body;
+    let user;
 
+    // Check if the userType is 'farmer' or 'buyer' and fetch user accordingly
     if (userType === "farmer") {
-      if (!phoneNumber || !password) {
-        return res.status(400).json({ msg: "Please provide both phone number and password." });
+      if (!phoneNumber) {
+        return res.status(400).json({
+          message: "Please provide a phone number for farmer login.",
+        });
       }
-
-      const user = await User.findOne({ phoneNumber });
-      if (!user) return res.status(400).json({ msg: "Invalid credentials." });
-
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) return res.status(400).json({ msg: "Invalid credentials." });
-
-      const token = jwt.sign(
-        { userId: user._id, userType: user.userType, location: user.address, Coordinates: user.location.coordinates, phoneNumber: user.phoneNumber, farmerName: user.fullName },
-        process.env.JWT_SECRET,
-        { expiresIn: "1d" }
-      );
-
-      res.status(200).json({
-        msg: "Login successful from farmer!",
-        user: { fullName: user.fullName, phoneNumber: user.phoneNumber, userType: user.userType, userId: user._id, location: user.location },
-        token,
-      });
+      user = await User.findOne({ phoneNumber });
     } else if (userType === "buyer") {
-      if (!email || !password) {
-        return res.status(400).json({ message: "Please provide both email and password." });
+      if (!email) {
+        return res.status(400).json({
+          message: "Please provide an email for buyer login.",
+        });
       }
-
-      const user = await User.findOne({ email });
-      if (!user) return res.status(400).json({ message: "Invalid credentials." });
-
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) return res.status(400).json({ message: "Invalid credentials." });
-
-      const token = jwt.sign(
-        { userId: user._id, userType: user.userType, location: user.address, phoneNumber: user.phoneNumber, buyerName: user.fullName },
-        process.env.JWT_SECRET,
-        { expiresIn: "1d" }
-      );
-
-      res.status(200).json({
-        message: "Login successful!",
-        user: { fullName: user.fullName, email: user.email, userType: user.userType, userId: user._id, location: user.location },
-        token,
+      user = await User.findOne({ email });
+    } else {
+      return res.status(400).json({
+        message: "Invalid userType provided.",
       });
     }
+
+    // If user not found, return 404 error
+    if (!user) {
+      return res.status(404).json({
+        message: `No ${userType} found with the provided identifier.`,
+      });
+    }
+
+    // Compare the provided password with the hashed password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: "Invalid credentials." });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: user._id, userType: user.userType },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    // Send the response with user details and token
+    res.status(200).json({
+      message: "Login successful!",
+      token,
+      user: {
+        id: user._id,
+        fullName: user.fullName,
+        userType: user.userType,
+        phoneNumber: user.phoneNumber,
+        email: user.email,
+        address: user.address,
+        location: user.location,
+      },
+    });
   } catch (error) {
     console.error("Login error:", error);
-    res.status(500).json({ message: "Internal server error." });
+    res.status(500).json({ message: "Internal server error.", error });
   }
 };

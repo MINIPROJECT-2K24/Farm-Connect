@@ -28,41 +28,31 @@ const BuyerLogin = () => {
         }
       );
       console.log(response);
-       const latitude = response.data.user.location.coordinates[0];
-       const longitude = response.data.user.location.coordinates[1];
-      const location=response.data.user.address
+      const latitude = response.data.user.location.coordinates[0];
+      const longitude = response.data.user.location.coordinates[1];
+      const location = response.data.user.address;
       const { token, buyerName, email: buyerEmail } = response.data;
       console.log(location);
       localStorage.setItem("token", token);
 
-      // [77.1006208, 13.3400771]  farmer data
-     
-       localStorage.setItem("latitude", latitude);
+      localStorage.setItem("latitude", latitude);
       localStorage.setItem("longitude", longitude);
-    //  localStorage.setItem(location);
 
-
-      // localStorage.setItem('buyerData', JSON.stringify({
-      //   buyerName,
-      //   email: buyerEmail,
-      //   location,
-      // }));
       localStorage.setItem("role", response.data.user.userType);
       alert("Login successful!");
 
-      navigate('/crop-search');
+      navigate("/crop-search");
     } catch (error) {
       console.error("Login error:", error);
-      alert(
-        "Login failed: " + (error.response?.data?.message || "Unknown error")
-      );
     }
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white shadow-lg rounded-lg p-8 max-w-sm w-full">
-        <h2 className="text-2xl font-bold text-center text-gray-700 mb-6">Buyer Login</h2>
+        <h2 className="text-2xl font-bold text-center text-gray-700 mb-6">
+          Buyer Login
+        </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <input
@@ -92,7 +82,10 @@ const BuyerLogin = () => {
           </button>
         </form>
         <p className="text-center text-gray-600 mt-4">
-          Don't have an account? <a href="/signup" className="text-blue-500 hover:underline">Sign up</a>
+          Don't have an account?{" "}
+          <a href="/signup" className="text-blue-500 hover:underline">
+            Sign up
+          </a>
         </p>
       </div>
     </div>
