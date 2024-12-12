@@ -1,4 +1,9 @@
 .navbar {
+  position: fixed; /* Keeps the navbar fixed at the top */
+  top: 0; /* Aligns the navbar to the top of the viewport */
+  left: 0; /* Aligns the navbar to the left edge */
+  width: 100%; /* Ensures the navbar spans the entire width of the viewport */
+  z-index: 1000; /* Places the navbar above other elements */
   background-color: rgb(115, 186, 222); /* Semi-transparent blue background */
   padding: 16px;
   display: flex;

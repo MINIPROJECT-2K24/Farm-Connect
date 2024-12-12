@@ -69,6 +69,7 @@ const CropSearch = () => {
         location: farmer.location,
     }}});
   };
+  
 
   return (
     <div className="p-8 bg-white min-h-screen">
