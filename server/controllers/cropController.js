@@ -38,6 +38,8 @@ export const addCrop = async (req, res) => {
 
     // Verify JWT token
     const token = req.headers["authorization"];
+    console.log(token);
+
     if (!token || !token.startsWith("Bearer ")) {
       return res
         .status(401)
@@ -45,41 +47,41 @@ export const addCrop = async (req, res) => {
     }
     const tokenValue = token.split(" ")[1];
     const tokenData = jwt.verify(tokenValue, process.env.JWT_SECRET);
+    console.log(tokenData);
 
-    // Validate crop data in req.body
     const { cropName, price, quantity } = req.body;
     if (!cropName || !price || !quantity) {
       return res.status(400).json({ message: "Invalid crop data" });
     }
 
-    // Upload file to Firebase Storage
     let photoURL = null;
     if (req.file) {
       try {
-        photoURL = await uploadFile(req.file); // Upload the file and get the URL
+        photoURL = await uploadFile(req.file);
       } catch (error) {
         return res.status(400).json({ message: error.message });
       }
     }
+    const loc = tokenData.address;
+    console.log(tokenData);
 
-    // Create new crop document in MongoDB
     const newCrop = new Crop({
       cropName,
-      price: Number(price), // Ensure price is a number
-      quantity: Number(quantity), // Ensure quantity is a number
+      price: Number(price),
+      quantity: Number(quantity),
       farmerName: tokenData.farmerName,
       phoneno: tokenData.phoneNumber,
       location: {
-        City: tokenData.location.city,
-        State: tokenData.location.state,
-        District: tokenData.location.district,
-        PostalCode: tokenData.location.postalCode,
+        City: loc.city,
+        State: loc.state,
+        District: loc.district,
+        PostalCode: loc.postalCode,
       },
       geopoint: {
         type: "Point",
         coordinates: tokenData.Coordinates || [0, 0],
       },
-      photo: photoURL, // Store Firebase Storage URL in MongoDB
+      photo: photoURL,
     });
 
     // Save crop to MongoDB
