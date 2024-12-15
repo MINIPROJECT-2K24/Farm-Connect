@@ -3,33 +3,32 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px;
-  background-color: #333;
+  background-color: #4ca7e4;
   color: white;
 }
 
 .navbar-left {
-  display: flex;
-  justify-content: flex-start;
-  width: 100%;
+  flex: 1; /* Takes up space on the left */
 }
 
 .navbar-right {
   display: flex;
   gap: 15px;
   justify-content: flex-end;
+  flex: 1; /* Pushes the buttons to the right */
 }
 
 .dashboard-button,
 .navbar-button {
   padding: 10px 15px;
-  background-color: #007bff; /* Blue color */
+  background-color: #0c1014; /* Blue color */
   color: white;
   border: none;
   cursor: pointer;
 }
 
 .navbar-button {
-  margin-right: 100px;
+  margin-right: 0; /* Remove extra margin */
 }
 
 .dashboard-button:hover,

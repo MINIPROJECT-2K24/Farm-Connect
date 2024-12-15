@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const FarmerLogin = () => {
+const FarmerLogin = ({ setIsLoggedIn }) => {
   const [formData, setFormData] = useState({
     identifier: "",
     password: "",
@@ -32,15 +32,19 @@ const FarmerLogin = () => {
         "http://localhost:5000/api/users/login",
         loginData
       );
-      console.log(response);
-      const { token, farmerName, location, phoneNumber, latitude, longitude } = response.data;
-      console.log(phoneNumber);
-      
-      localStorage.setItem("token", token);
-      localStorage.setItem("phoneNo",response.data.user.phoneNumber)
-      localStorage.setItem("role", response.data.user.userType);
 
-      navigate('/crop-search'); // Navigate to the crop search page
+      const { token, user } = response.data;
+
+      // Store token and user details in local storage
+      localStorage.setItem("token", token);
+      localStorage.setItem("phoneNo", user.phoneNumber);
+      localStorage.setItem("role", user.userType);
+
+      // Set isLoggedIn state to true
+      setIsLoggedIn(true);
+
+      // Navigate to crop search page
+      navigate("/crop-search");
     } catch (error) {
       setError("Login failed! Please check your credentials.");
       console.error("Login error:", error.response?.data || error.message);

@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Route, Router, Routes, useNavigate } from "react-router-dom";
 import MapComp from "../components/LeafletMap";
 import axios from "axios";
+import FarmerDetails from "./FarmerDetails";
+
+
+
+
 
 const CropSearch = () => {
   const [district, setDistrict] = useState("");

@@ -1,15 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import Select from "react-select";
 import "./Navbar.css";
 
-const Navbar = ({ role }) => {
+const Navbar = ({ role, setIsLoggedIn }) => {
   const navigate = useNavigate();
-  const [selectedLanguage, setSelectedLanguage] = useState(
-    localStorage.getItem("selectedLanguage") || "en"
-  );
 
-  // Handle logout
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("phoneNo");
@@ -17,31 +12,12 @@ const Navbar = ({ role }) => {
     localStorage.removeItem("latitude");
     localStorage.removeItem("longitude");
     localStorage.removeItem("selectedLanguage");
+    setIsLoggedIn(false);
     navigate("/");
   };
 
-  const handleLanguageChange = (selectedOption) => {
-    const selectedLanguage = selectedOption.value;
-    setSelectedLanguage(selectedLanguage);
-    localStorage.setItem("selectedLanguage", selectedLanguage);
-    window.location.reload();
-  };
-
-  const languageOptions = [
-    { value: "en", label: "English" },
-    { value: "kn", label: "Kannada" },
-    { value: "hi", label: "Hindi" },
-    { value: "te", label: "Telugu" },
-    { value: "ta", label: "Tamil" },
-    { value: "ml", label: "Malayalam" },
-  ];
-
   return (
     <nav className="navbar">
-      {/* Language Dropdown with react-select */}
-      <div className="language-selector"></div>
-
-      {/* Right-side: Dashboard (for farmers) and Logout button */}
       <div className="navbar-right">
         {role === "farmer" && (
           <button
