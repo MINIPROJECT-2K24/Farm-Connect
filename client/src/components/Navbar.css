@@ -1,51 +1,60 @@
 .navbar {
-  position: fixed; /* Keeps the navbar fixed at the top */
-  top: 0; /* Aligns the navbar to the top of the viewport */
-  left: 0; /* Aligns the navbar to the left edge */
-  width: 100%; /* Ensures the navbar spans the entire width of the viewport */
-  z-index: 1000; /* Places the navbar above other elements */
-  background-color: rgb(115, 186, 222); /* Semi-transparent blue background */
-  padding: 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 10px;
+  background-color: #333;
+  color: white;
 }
 
 .navbar-left {
   display: flex;
-  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
 }
 
 .navbar-right {
   display: flex;
-  align-items: center; /* Align items in the center */
-  gap: 15px; /* Add spacing between the buttons */
-  margin-left: auto; /* Push the buttons to the right */
+  gap: 15px;
+  justify-content: flex-end;
+}
+
+.dashboard-button,
+.navbar-button {
+  padding: 10px 15px;
+  background-color: #007bff; /* Blue color */
+  color: white;
+  border: none;
+  cursor: pointer;
 }
 
 .navbar-button {
-  color: white;
-  text-decoration: none;
-  padding: 5px 10px;
-  background-color: #000000; /* Brownish background for buttons */
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
+  margin-right: 100px;
 }
 
-.navbar-button:hover,
-.dashboard-button:hover {
-  background-color: #635b5a; /* Darker shade on hover */
+.dashboard-button:hover,
+.navbar-button:hover {
+  background-color: #0056b3; /* Darker shade of blue */
 }
 
-.dashboard-button {
-  color: white;
-  text-decoration: none;
-  padding: 5px 10px;
-  background-color: #000000; /* Same background color as logout */
-  border: none;
-  border-radius: 5px;
+/* Style for the language selector */
+.language-selector {
+  margin-left: 20px;
+}
+
+.dropdown {
+  padding: 8px;
+  font-size: 14px;
   cursor: pointer;
-  font-size: 16px;
+  background-color: green; /* Set dropdown button to green */
+  border: 1px solid #ccc;
+  color: black; /* Set the text color of the dropdown to black */
+}
+
+.dropdown:hover {
+  background-color: #4caf50; /* Darker green when hovered */
+}
+
+.dropdown option {
+  color: black; /* Ensure text in options is black */
 }

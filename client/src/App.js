@@ -1,105 +1,53 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import CropSearch from "./pages/HomePage";
-import FarmerRegister from "./pages/FarmerRegister";
-import BuyerRegister from "./pages/BuyerRegister";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom"; // Import Navigate from react-router-dom
+import { useState, useEffect } from "react";
+import PrivateRoute from "./components/PrivateRoute"; // Assuming you have a PrivateRoute component
+import Navbar from "./components/Navbar";
+import Dashboard from "./pages/Dashboard";
+import CropSearch from "./pages/HomePage"; // Example page
 import FarmerLogin from "./pages/FarmerLogin";
 import BuyerLogin from "./pages/BuyerLogin";
-import CropDetails from "./pages/CropDetails";
 import LandPage from "./pages/LandingPage";
-import PrivateRoute from "./components/PrivateRoute";
-import PublicRoute from "./components/PublicRoute"; // New PublicRoute component
-import Navbar from "./components/Navbar";
-import FarmerDetails from './pages/FarmerDetails';
-import Dashboard from './pages/Dashboard';
-import MyPost from './pages/Mypost';
 
 const App = () => {
   const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
 
   return (
     <Router>
+      {/* Only render Navbar if logged in and on private routes */}
+      {token && (
+        <Navbar role={role} /> // Pass role to Navbar to conditionally render Dashboard button
+      )}
+
       <Routes>
         {/* Public Routes */}
-        <Route 
-          path="/" 
-          element={<LandPage />} 
-        />
-        <Route 
-          path="/login-farmer" 
-          element={
-            <PublicRoute>
-              <FarmerLogin />
-            </PublicRoute>
-          } 
-        />
-        <Route 
-          path="/register-farmer" 
-          element={
-            <PublicRoute>
-              <FarmerRegister />
-            </PublicRoute>
-          } 
-        />
-        <Route 
-          path="/login-buyer" 
-          element={
-            <PublicRoute>
-              <BuyerLogin />
-            </PublicRoute>
-          } 
-        />
-        <Route 
-          path="/register-buyer" 
-          element={
-            <PublicRoute>
-              <BuyerRegister />
-            </PublicRoute>
-          } 
-        />
+        <Route path="/" element={<LandPage />} />
+        <Route path="/login-farmer" element={<FarmerLogin />} />
+        <Route path="/login-buyer" element={<BuyerLogin />} />
 
         {/* Private Routes */}
+        <Route
+          path="/dashboard"
+          element={
+            role === "farmer" ? (
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            ) : (
+              <Navigate to="/" /> // Redirect non-farmers to home
+            )
+          }
+        />
         <Route
           path="/crop-search"
           element={
             <PrivateRoute>
-              {token && <Navbar />} {/* Render Navbar if authenticated */}
               <CropSearch />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/add-crop"
-          element={
-            <PrivateRoute>
-              {token && <Navbar />}
-              <CropDetails />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/dashboard"
-          element={
-            <PrivateRoute>
-              {token && <Navbar />} 
-              <Dashboard />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/farmer-details"
-          element={
-            <PrivateRoute>
-              {token && <Navbar />}
-              <FarmerDetails />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/my-posts"
-          element={
-            <PrivateRoute>
-              {token && <Navbar />}
-              <MyPost />
             </PrivateRoute>
           }
         />
