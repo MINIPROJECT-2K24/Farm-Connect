@@ -8,6 +8,9 @@ import FarmerLogin from "./pages/FarmerLogin";
 import BuyerLogin from "./pages/BuyerLogin";
 import LandPage from "./pages/LandingPage";
 import FarmerDetails from "./pages/FarmerDetails";
+import Weather from "./pages/weather";
+import FarmerRegister from "./pages/FarmerRegister";
+import BuyerRegister from "./pages/BuyerRegister"
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
@@ -21,7 +24,10 @@ const App = () => {
         <Route path="/" element={<LandPage />} />
         <Route path="/login-farmer" element={<FarmerLogin setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/login-buyer" element={<BuyerLogin setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/register-farmer" element={<FarmerRegister />}/>
+        <Route path="/register-buyer" element={<BuyerRegister/>}/>
         <Route path="/farmer-details" element={<FarmerDetails />} />
+        <Route path="/weather" element={<Weather />} />
         <Route
           path="/dashboard"
           element={
