@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { useState, useEffect } from "react";
 import PrivateRoute from "./components/PrivateRoute";
 import Navbar from "./components/Navbar";
@@ -10,7 +15,8 @@ import LandPage from "./pages/LandingPage";
 import FarmerDetails from "./pages/FarmerDetails";
 import Weather from "./pages/weather";
 import FarmerRegister from "./pages/FarmerRegister";
-import BuyerRegister from "./pages/BuyerRegister"
+import BuyerRegister from "./pages/BuyerRegister";
+import { AiCropAdvisor } from "./pages/AiTranslate";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
@@ -22,10 +28,16 @@ const App = () => {
 
       <Routes>
         <Route path="/" element={<LandPage />} />
-        <Route path="/login-farmer" element={<FarmerLogin setIsLoggedIn={setIsLoggedIn} />} />
-        <Route path="/login-buyer" element={<BuyerLogin setIsLoggedIn={setIsLoggedIn} />} />
-        <Route path="/register-farmer" element={<FarmerRegister />}/>
-        <Route path="/register-buyer" element={<BuyerRegister/>}/>
+        <Route
+          path="/login-farmer"
+          element={<FarmerLogin setIsLoggedIn={setIsLoggedIn} />}
+        />
+        <Route
+          path="/login-buyer"
+          element={<BuyerLogin setIsLoggedIn={setIsLoggedIn} />}
+        />
+        <Route path="/register-farmer" element={<FarmerRegister />} />
+        <Route path="/register-buyer" element={<BuyerRegister />} />
         <Route path="/farmer-details" element={<FarmerDetails />} />
         <Route path="/weather" element={<Weather />} />
         <Route
@@ -40,6 +52,20 @@ const App = () => {
             )
           }
         />
+
+        <Route
+          path="/cropanalyze"
+          element={
+            role === "farmer" ? (
+              <PrivateRoute>
+                <AiCropAdvisor />
+              </PrivateRoute>
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+
         <Route
           path="/crop-search"
           element={

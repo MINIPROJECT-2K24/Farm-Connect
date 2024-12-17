@@ -1,11 +1,14 @@
 // cropController.js
-import { bucket } from "../config/firebase.js"; // Firebase bucket
-import jwt from "jsonwebtoken"; // Import jsonwebtoken
-import { v4 as uuidv4 } from "uuid"; // UUID for unique file names
-import path from "path"; // For handling file paths
-import Crop from "../models/cropSchema.js"; // Ensure Crop model is correctly set up
+import dotenv from "dotenv";
+dotenv.config();
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { bucket } from "../config/firebase.js";
+import jwt from "jsonwebtoken";
+import { v4 as uuidv4 } from "uuid";
+import path from "path";
+import Crop from "../models/cropSchema.js";
+import axios from "axios";
 
-// Function to upload file to Firebase Storage
 const uploadFile = async (file) => {
   try {
     // Generate unique file name
@@ -211,6 +214,105 @@ export const getCropbyUser = async (req, res) => {
     res.status(200).send({ msg: "Crop fetched successfully", crop });
   } catch (err) {
     res.status(500).send({ msg: "Internal Server Error" });
+  }
+};
+const apiKey = process.env.GEMINI_API_KEY;
+const genAI = new GoogleGenerativeAI(apiKey);
+
+const model = genAI.getGenerativeModel({
+  model: "gemini-1.5-flash",
+});
+
+const generationConfig = {
+  temperature: 1,
+  topP: 0.95,
+  topK: 40,
+  maxOutputTokens: 8192,
+  responseMimeType: "text/plain",
+};
+
+export const cropanalyze = async (req, res) => {
+  const { cropName, acreage, soilType, season } = req.body;
+  console.log(req.body);
+
+  if (!cropName || !acreage || !soilType || !season) {
+    return res.status(400).json({
+      error:
+        "All fields (cropName, acreage, soilType, and season) are required.",
+    });
+  }
+
+  try {
+    // Construct the prompt asking for detailed recommendations
+    const prompt = `
+Provide comprehensive agricultural recommendations for the following crop, based on the provided details:
+
+- **Crop Name**: ${cropName}
+- **Acreage**: ${acreage}
+- **Soil Type**: ${soilType}
+- **Season**: ${season}
+
+Please respond in a structured format with clear headings and detailed explanations, like the example below:
+
+1. **Growing Methods**: 
+   - Provide a detailed explanation of the best growing practices and techniques suitable for this crop in the given soil type and season.
+
+2. **Water Requirements**: 
+   - Specify the water needs for this crop, including the frequency and amount of irrigation required for the specific season and soil type.
+
+3. **Fertilizer Recommendations**: 
+   - Describe the types and quantities of fertilizers that are optimal for this crop’s growth in the selected soil and season.
+
+4. **Harvesting Procedure**: 
+   - Explain the harvesting process, including the timing, methods, and equipment required for the crop.
+
+5. **Required Instruments and Tools**: 
+   - List the tools and instruments needed for various stages of cultivation, including land preparation, irrigation, weeding, harvesting, and post-harvest handling.
+
+Please provide the information in the following JSON structure:
+
+{
+  "growingMethods": "Detailed explanation about growing methods.",
+  "waterNeeded": "Watering needs including frequency and amount.",
+  "fertilizerNeeded": "Types and quantities of fertilizers.",
+  "harvestProcedure": "Detailed harvesting procedure.",
+  "instruments": "Tools and instruments needed."
+}
+`;
+
+    // Start a chat session with the model
+    const chatSession = model.startChat({
+      generationConfig,
+      history: [],
+    });
+
+    // Send the prompt to Gemini
+    const result = await chatSession.sendMessage(prompt);
+
+    // Log the full candidates[0] for debugging
+    console.log("Gemini API Candidates[0]:", result.response.candidates[0]);
+
+    // Extract the full recommendations text from the response
+    const parts = result?.response?.candidates?.[0]?.content?.parts;
+    const recommendations =
+      Array.isArray(parts) && parts[0] ? parts[0] : "No recommendations found.";
+
+    // if (typeof recommendations !== "string") {
+    //   console.error("Invalid recommendations format:", recommendations);
+    //   return res.status(500).json({
+    //     error:
+    //       "Failed to fetch crop recommendations. Unexpected response format.",
+    //   });
+    // }
+
+    // Log the entire recommendation text for debugging
+    console.log("Full Recommendations:", recommendations);
+
+    // Send the full text response to the frontend
+    res.status(200).send({ response: recommendations });
+  } catch (error) {
+    console.error("Error calling Gemini API:", error);
+    res.status(500).json({ error: "Failed to fetch crop recommendations." });
   }
 };
 

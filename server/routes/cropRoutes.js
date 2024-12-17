@@ -1,9 +1,10 @@
 import express from "express";
-import multer from 'multer';
-import path from 'path'
+import multer from "multer";
+import path from "path";
 import upload from "../middleware/upload.js"; // Multer middleware import
 import {
   addCrop,
+  cropanalyze,
   deleteCrop,
   getAllcrops,
   getCropbyUser,
@@ -23,9 +24,11 @@ router.put("/update/:id", updateCrop);
 
 //get req
 router.get("/getcrops", getAllcrops);
-router.post("/getSingleuser",getCropbyUser);
+router.post("/getSingleuser", getCropbyUser);
 
 //delete req
 router.delete("/delete/:id", deleteCrop);
+
+router.post("/ai-crop-advisor", cropanalyze);
 
 export default router;

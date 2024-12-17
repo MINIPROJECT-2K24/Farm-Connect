@@ -17,7 +17,7 @@ const Navbar = ({ role, setIsLoggedIn }) => {
   };
 
   const handleWeatherForecast = () => {
-    navigate("/weather"); // Navigate to the weather forecast page
+    navigate("/weather");
   };
 
   return (
@@ -25,10 +25,7 @@ const Navbar = ({ role, setIsLoggedIn }) => {
       <div className="navbar-right">
         {role === "farmer" && (
           <>
-            <button
-              onClick={handleWeatherForecast}
-              className="navbar-button"
-            >
+            <button onClick={handleWeatherForecast} className="navbar-button">
               Weather Forecast
             </button>
             <button
@@ -36,6 +33,13 @@ const Navbar = ({ role, setIsLoggedIn }) => {
               className="dashboard-button"
             >
               Dashboard
+            </button>
+
+            <button
+              onClick={() => navigate("/cropanalyze")}
+              className="ai-button"
+            >
+              CropAi
             </button>
           </>
         )}

@@ -13,13 +13,14 @@
 
 .navbar-right {
   display: flex;
-  gap: 15px;
+  gap: 10px;
   justify-content: flex-end;
   flex: 1; /* Pushes the buttons to the right */
 }
 
 .dashboard-button,
-.navbar-button {
+.navbar-button,
+.ai-button {
   padding: 10px 15px;
   background-color: #0c1014; /* Blue color */
   color: white;
@@ -28,7 +29,7 @@
 }
 
 .navbar-button {
-  margin-right: 0; /* Remove extra margin */
+  margin-right: 100px; /* Remove extra margin */
 }
 
 .dashboard-button:hover,
