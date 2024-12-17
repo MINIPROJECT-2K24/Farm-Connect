@@ -39,7 +39,7 @@ const Navbar = ({ role, setIsLoggedIn }) => {
               onClick={() => navigate("/cropanalyze")}
               className="ai-button"
             >
-              CropAi
+              CropAI  
             </button>
           </>
         )}

@@ -18,48 +18,61 @@ export const AiCropAdvisor = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     setMessages((prev) => [
       ...prev,
       { type: "user", text: `Crop Details: ${JSON.stringify(formData)}` },
     ]);
-
+  
     try {
       setLoading(true);
-
-      // Call the backend API
+  
       const { data } = await axios.post(
         "http://localhost:5000/api/crops/ai-crop-advisor",
         formData
       );
-      console.log("Backend response:", data);
-
-      const responseText = data.text.trim(); // Assuming the backend response is in a 'text' field
-      const jsonDataMatch = responseText.match(/```json\n([\s\S]+?)\n```/);
-
-      if (jsonDataMatch && jsonDataMatch[1]) {
-        const jsonData = JSON.parse(jsonDataMatch[1]);
-
-        const fullResponse = `
-          **1. Growing Methods:** ${jsonData.growingMethods}\n\n
-          **2. Water Requirements:** ${jsonData.waterNeeded}\n\n
-          **3. Fertilizer Requirements:** ${jsonData.fertilizerNeeded}\n\n
-          **4. Harvesting Procedure:** ${jsonData.harvestProcedure}\n\n
-          **5. Instruments Needed:** ${jsonData.instruments}\n\n
-        `;
-
-        setMessages((prev) => [
-          ...prev,
-          { type: "bot", text: "Here are the recommendations for your crop:" },
-          { type: "bot", text: fullResponse },
-        ]);
+      console.log("Backend Response:", data);
+  
+      if (data && data.response && data.response.text) {
+        const cleanedResponse = data.response.text
+          .replace(/```json/, "")
+          .replace(/```/, "")
+          .trim();
+  
+        try {
+          const jsonData = JSON.parse(cleanedResponse);
+  
+          const steps = [
+            `**1. Growing Methods:** ${jsonData.growingMethods || "N/A"}`,
+            `**2. Water Requirements:** ${jsonData.waterNeeded || "N/A"}`,
+            `**3. Fertilizer Requirements:** ${jsonData.fertilizerNeeded || "N/A"}`,
+            `**4. Harvesting Procedure:** ${jsonData.harvestProcedure || "N/A"}`,
+            `**5. Instruments Needed:** ${jsonData.instruments || "N/A"}`,
+          ];
+  
+          setMessages((prev) => [
+            ...prev,
+            { type: "bot", text: "Here are the recommendations for your crop:" },
+          ]);
+  
+          steps.forEach((step, i) => {
+            setTimeout(() => {
+              setMessages((prev) => [...prev, { type: "bot", text: step }]);
+            }, (i + 1) * 1000); // 1-second delay per step
+          });
+        } catch (parseError) {
+          setMessages((prev) => [
+            ...prev,
+            { type: "bot", text: "Sorry, the server returned an invalid response format." },
+          ]);
+          console.error("JSON Parse Error:", parseError);
+        }
       } else {
         setMessages((prev) => [
           ...prev,
-          { type: "bot", text: "Sorry, the data format is incorrect." },
+          { type: "bot", text: "Sorry, no valid response received from the server." },
         ]);
       }
     } catch (error) {
@@ -67,14 +80,14 @@ export const AiCropAdvisor = () => {
         ...prev,
         {
           type: "bot",
-          text: "Sorry, there was an error processing your request.",
+          text: "Sorry, there was an error processing your request. Please try again.",
         },
       ]);
+      console.error("Error:", error);
     } finally {
       setLoading(false);
     }
   };
-
   return (
     <div className="flex flex-col lg:flex-row w-full h-screen bg-gray-100 mb-20">
       {/* Left Side: Form */}
@@ -141,7 +154,6 @@ export const AiCropAdvisor = () => {
               <option value="silty">Silty</option>
             </select>
           </div>
-
           <div className="flex justify-between p-4">
             {/* Loamy Soil Image */}
             <div className="w-1/4 px-2 text-center">
@@ -183,7 +195,6 @@ export const AiCropAdvisor = () => {
               <p className="mt-2 font-medium text-gray-700">Silty Soil</p>
             </div>
           </div>
-
           <div className="mb-4">
             <label
               htmlFor="season"
@@ -218,7 +229,7 @@ export const AiCropAdvisor = () => {
       {/* Right Side: AI Responses */}
       <div className="w-full lg:w-1/2 p-6 bg-gray-50 overflow-y-auto">
         <h2 className="text-2xl font-bold mb-4">AI Crop Advisor</h2>
-        <div className="space-y-4">
+        <div className="space-y-6">
           {messages.map((msg, index) => (
             <div
               key={index}
@@ -226,7 +237,7 @@ export const AiCropAdvisor = () => {
                 msg.type === "bot"
                   ? "bg-gray-200 text-gray-900"
                   : "bg-blue-500 text-white"
-              } p-3 rounded-lg max-w-lg ${
+              } p-3 rounded-lg max-w-2xl ${
                 msg.type === "bot" ? "self-start" : "self-end"
               }`}
             >
