@@ -69,43 +69,44 @@ function Weather() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h1 className="text-3xl font-semibold text-center text-gray-800 mb-6">5-Day Weather Forecast</h1>
+    <div className='bg-[black]'>
+    <div className="max-w-5xl mx-auto p-6 mt-4 bg-[#1E1E1E] rounded-lg shadow-lg">
+      <h1 className="text-3xl font-semibold text-center text-[#FFEB3B] mb-6">5-Day Weather Forecast</h1>
 
-      <form onSubmit={handleSubmit} className="flex justify-center mb-6">
+      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row justify-center mb-6">
         <input
           type="text"
           placeholder="Enter city"
           value={city}
           onChange={handleCityChange}
-          className="p-3 w-1/3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="p-3 mb-4 sm:mb-0 sm:w-1/2 border-2 border-[#FFB3B3] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFB3B3]"
         />
         <button
           type="submit"
-          className="ml-4 p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+          className="p-3 sm:ml-4 bg-[#FFB3B3] text-[#1E1E1E] rounded-lg hover:bg-[#FF8C8C] focus:outline-none focus:ring-2 focus:ring-[#1E1E1E]"
         >
           Get Weather
         </button>
       </form>
 
-      {error && <p className="text-red-500 text-center">{error}</p>}
+      {error && <p className="text-[#FFEB3B] text-center">{error}</p>}
 
       {weatherData && (
         <div className="space-y-8">
           {Object.keys(formattedWeatherData).map((day, index) => {
             return (
-              <div key={index} className="bg-gray-100 p-4 rounded-lg shadow-md">
-                <h3 className="text-xl font-medium text-gray-700 mb-4">{day}</h3>
-                <table className="min-w-full table-auto bg-black text-white">
+              <div key={index} className="bg-[#3A3A3A] p-4 rounded-lg shadow-md">
+                <h3 className="text-xl font-medium text-[#FFB3B3] mb-4">{day}</h3>
+                <table className="min-w-full table-auto bg-[#1E1E1E] text-[#FFFFFF]">
                   <thead>
                     <tr>
-                      <th className="px-4 py-2 text-left text-white-600">Icon</th>
-                      <th className="px-4 py-2 text-left text-white-600">Time</th>
-                      <th className="px-4 py-2 text-left text-white-600">Temperature</th>
-                      <th className="px-4 py-2 text-left text-white-600">Condition</th>
-                      <th className="px-4 py-2 text-left text-white-600">Description</th>
-                      <th className="px-4 py-2 text-left text-white-600">Wind Speed</th>
-                      <th className="px-4 py-2 text-left text-white-600">Humidity</th>
+                      <th className="px-4 py-2 text-left text-[#FFEB3B]">Icon</th>
+                      <th className="px-4 py-2 text-left text-[#FFEB3B]">Time</th>
+                      <th className="px-4 py-2 text-left text-[#FFEB3B]">Temperature</th>
+                      <th className="px-4 py-2 text-left text-[#FFEB3B]">Condition</th>
+                      <th className="px-4 py-2 text-left text-[#FFEB3B]">Description</th>
+                      <th className="px-4 py-2 text-left text-[#FFEB3B]">Wind Speed</th>
+                      <th className="px-4 py-2 text-left text-[#FFEB3B]">Humidity</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -134,6 +135,7 @@ function Weather() {
           })}
         </div>
       )}
+    </div>
     </div>
   );
 }

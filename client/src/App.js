@@ -18,11 +18,14 @@ import FarmerRegister from "./pages/FarmerRegister";
 import BuyerRegister from "./pages/BuyerRegister";
 import { AiCropAdvisor } from "./pages/AiTranslate";
 import Npkmodel from "./pages/Npkmodel";
+import { Toaster } from 'react-hot-toast';
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
   const role = localStorage.getItem("role");
 
   return (
+    <>
+    <Toaster position="top-right" toastOptions={{ duration: 2000 }} />
     <Router>
       {isLoggedIn && <Navbar role={role} setIsLoggedIn={setIsLoggedIn} />}
 
@@ -77,6 +80,7 @@ const App = () => {
         />
       </Routes>
     </Router>
+    </>
   );
 };
 
