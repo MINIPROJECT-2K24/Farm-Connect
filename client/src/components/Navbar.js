@@ -25,6 +25,17 @@ const Navbar = ({ role, setIsLoggedIn }) => {
       <div className="navbar-right">
         {role === "farmer" && (
           <>
+          <button onClick={()=>navigate("/npk-model")}
+           className="model-button"
+           >
+          N-P-k predictor
+          </button>
+          <button
+          onClick={() => navigate("/cropanalyze")}
+          className="ai-button"
+          >
+          CropAI  
+          </button>
             <button onClick={handleWeatherForecast} className="navbar-button">
               Weather Forecast
             </button>
@@ -34,13 +45,7 @@ const Navbar = ({ role, setIsLoggedIn }) => {
             >
               Dashboard
             </button>
-
-            <button
-              onClick={() => navigate("/cropanalyze")}
-              className="ai-button"
-            >
-              CropAI  
-            </button>
+            
           </>
         )}
         <button onClick={handleLogout} className="navbar-button">

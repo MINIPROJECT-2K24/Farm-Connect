@@ -17,7 +17,7 @@ import Weather from "./pages/weather";
 import FarmerRegister from "./pages/FarmerRegister";
 import BuyerRegister from "./pages/BuyerRegister";
 import { AiCropAdvisor } from "./pages/AiTranslate";
-
+import Npkmodel from "./pages/Npkmodel";
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
   const role = localStorage.getItem("role");
@@ -40,6 +40,7 @@ const App = () => {
         <Route path="/register-buyer" element={<BuyerRegister />} />
         <Route path="/farmer-details" element={<FarmerDetails />} />
         <Route path="/weather" element={<Weather />} />
+        <Route path="/npk-model" element={<Npkmodel/>}/>
         <Route
           path="/dashboard"
           element={

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import axios from "axios";
+import ReactMarkdown from 'react-markdown';
 
+import axios from "axios";
 export const AiCropAdvisor = () => {
   const [formData, setFormData] = useState({
     cropName: "",
@@ -55,6 +56,7 @@ export const AiCropAdvisor = () => {
           setMessages((prev) => [
             ...prev,
             { type: "bot", text: "Here are the recommendations for your crop:" },
+            { type: "steps", steps },
           ]);
   
           steps.forEach((step, i) => {
@@ -88,6 +90,15 @@ export const AiCropAdvisor = () => {
       setLoading(false);
     }
   };
+  function StepsComponent({ steps }) {
+    return (
+      <div>
+        {steps.map((step, index) => (
+          <ReactMarkdown key={index}>{step}</ReactMarkdown>
+        ))}
+      </div>
+    );
+  }
   return (
     <div className="flex flex-col lg:flex-row w-full h-screen bg-gray-100 mb-20">
       {/* Left Side: Form */}
@@ -227,30 +238,59 @@ export const AiCropAdvisor = () => {
       </div>
 
       {/* Right Side: AI Responses */}
+      {/* Right Side: AI Responses */}
       <div className="w-full lg:w-1/2 p-6 bg-gray-50 overflow-y-auto">
-        <h2 className="text-2xl font-bold mb-4">AI Crop Advisor</h2>
-        <div className="space-y-6">
-          {messages.map((msg, index) => (
-            <div
-              key={index}
-              className={`${
-                msg.type === "bot"
-                  ? "bg-gray-200 text-gray-900"
-                  : "bg-blue-500 text-white"
-              } p-3 rounded-lg max-w-2xl ${
-                msg.type === "bot" ? "self-start" : "self-end"
-              }`}
-            >
-              {msg.text}
-            </div>
-          ))}
-          {loading && (
-            <div className="bg-gray-200 text-gray-900 p-3 rounded-lg max-w-lg self-start">
-              Typing...
-            </div>
-          )}
+      <h2 className="text-2xl font-bold mb-4">AI Crop Advisor</h2>
+      <div className="space-y-5">
+      {messages.map((msg, index) => {
+      if (msg.type === "steps") {
+      return (
+        <div
+          key={index}
+          className={`${
+            msg.type==="bot"
+              ? "bg-gray-200 text-grey-900"
+              : "bg-grey-500 text-black"
+          } p-3 rounded-lg max-w-2xl ${
+            msg.type === "bot" ? "self-start" : "self-end"
+          }`}
+        >
+         <StepsComponent  steps={msg.steps} />
         </div>
+      );
+    }
+    })}
+    {loading && (
+      <div className="bg-gray-200 text-gray-900 p-3 rounded-lg max-w-lg self-start">
+        Typing...
       </div>
+    )}
+  </div>
+</div>
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
     </div>
   );
 };

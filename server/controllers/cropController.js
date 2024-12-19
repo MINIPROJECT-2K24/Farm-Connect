@@ -252,7 +252,7 @@ Provide comprehensive agricultural recommendations for the following crop, based
 - **Soil Type**: ${soilType}
 - **Season**: ${season}
 
-Please respond in a structured format with clear headings and detailed explanations, like the example below:
+Please respond in a structured format with clear highligted high font size headings  and detailed explanations in normal font size , like the example below:
 
 1. **Growing Methods**: 
    - Provide a detailed explanation of the best growing practices and techniques suitable for this crop in the given soil type and season.

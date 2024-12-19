@@ -20,12 +20,20 @@
 
 .dashboard-button,
 .navbar-button,
-.ai-button {
+.ai-button,
+.model-button {
   padding: 10px 15px;
   background-color: #0c1014; /* Blue color */
   color: white;
   border: none;
   cursor: pointer;
+}
+
+.navbar-button{
+  margin-right: 100px;
+}
+.dashboard-button{
+ margin-right: 10px;
 }
 
 .navbar-button {
